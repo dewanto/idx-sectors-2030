@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { AGENDA_ADOPTED, DEADLINE_2030, EXECUTION_WINDOWS, parseDate } from "@/lib/system";
+import { daysLeftTo2030, liveDateLabel } from "@/lib/live-clock";
 import { Milestone, Radar, Flag } from "lucide-react";
 import LiveCountdown from "./LiveCountdown";
 import { tpl, type Dict, type Locale } from "@/i18n/dict";
@@ -10,8 +11,6 @@ const RAIL_SPAN = DEADLINE_2030.getTime() - AGENDA_ADOPTED.getTime();
 const railPct = (d: Date) =>
   Math.min(100, Math.max(0, ((d.getTime() - AGENDA_ADOPTED.getTime()) / RAIL_SPAN) * 100));
 
-const LOCALE_TAG: Record<Locale, string> = { en: "en-GB", id: "id-ID", zh: "zh-CN" };
-
 export default function ExecutionClock({ t: d, locale }: { t: Dict; locale: Locale }) {
   const t = d.hero;
 
@@ -19,14 +18,10 @@ export default function ExecutionClock({ t: d, locale }: { t: Dict; locale: Loca
   const now = new Date();
   const pNow = railPct(now);
   const pGsdr = railPct(GSDR_DATE);
-  const nowLabel = now.toLocaleDateString(LOCALE_TAG[locale], {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  const nowLabel = liveDateLabel(locale, now);
 
   /* remaining runway, consistent with the live countdown */
-  const daysLeft = Math.max(0, Math.round((DEADLINE_2030.getTime() - now.getTime()) / 86_400_000));
+  const daysLeft = daysLeftTo2030(now);
   const monthsLeft = +(daysLeft / 30.44).toFixed(1);
   const yearsLeft = +(daysLeft / 365.25).toFixed(2);
 

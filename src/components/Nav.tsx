@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Crosshair, LayoutGrid, Target, ScanSearch, Gauge, Timer, Info } from "lucide-react";
-import { DAYS_TO_2030 } from "@/lib/system";
+import { daysLeftTo2030, liveDateLabel } from "@/lib/live-clock";
 import type { Dict, Locale } from "@/i18n/dict";
 import { hrefLang } from "@/i18n/link";
 import LangSwitcher from "./LangSwitcher";
@@ -58,10 +58,10 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
         <div className="flex items-center gap-2">
           <span className="chip hidden xl:inline-flex">
             <span className="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-            28 Sep 2026
+            <span suppressHydrationWarning>{liveDateLabel(locale)}</span>
           </span>
           <span className="chip hidden !border-[color:var(--accent)] !text-[color:var(--accent)] md:inline-flex">
-            D-{DAYS_TO_2030.toLocaleString()}
+            <span suppressHydrationWarning>D-{daysLeftTo2030().toLocaleString("en-US")}</span>
           </span>
           <LangSwitcher locale={locale} />
         </div>
