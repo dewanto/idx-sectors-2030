@@ -1,10 +1,118 @@
 # IDX Sectors 2030
 
-> Formerly **SDG Signal Scout 2030** — rebranded 2026-10-05.
-
 Evidence-backed SDG execution intelligence for Indonesian listed companies. Business
 events are mapped to UN SDG targets, classified by execution stage, scored against the
 2030 horizon, and validated against live **Sectors Financial API v2** market data.
+
+## Why IDX Sectors 2030 exists
+
+The 2030 deadline is not symbolic — it is a financing and re-rating clock.
+
+- **The UN 2030 Agenda ends in 2030.** The 17 Sustainable Development Goals and 169
+  targets expire in 2030. Meeting them needs roughly US$4 trillion a year of additional
+  financing in developing countries — private capital and capital markets are the
+  channel that can close the gap.
+- **Why IDX companies.** 900+ listed Indonesian companies disclose under OJK rules, so
+  SDG execution — energy transition, digitalisation, water and sanitation — can be
+  audited from public data instead of marketing claims.
+- **Why now.** About four years remain. Allocation decisions made today — which projects
+  get funded, which milestones get executed — decide who captures the SDG premium as
+  2030 reprices execution.
+- **Why cycle timing.** Markets discount execution years in advance. The 432-day cycle
+  framework gives a timing context for when dislocations tend to close — the bridge
+  between evidence and entry.
+
+## What problem does it solve?
+
+### Problem 1 — Too Much Information, Too Little Signal
+
+There are many companies, market metrics, business announcements, and news articles.
+Researchers cannot manually investigate all of them every day.
+
+IDX Sectors 2030 filters:
+
+```
+Thousands of data points
+        ↓
+Business events
+        ↓
+Market context
+        ↓
+Derived signals
+        ↓
+Research priorities
+```
+
+The goal is not to show more information.
+The goal is to identify *what deserves attention*.
+
+### Problem 2 — Business News and Market Data Are Disconnected
+
+A news article may report:
+
+> A company announces a new renewable-energy project.
+
+Market data may show:
+
+```
+Price            +4.2%
+Volume           2.8× average
+Industry         +1.1%
+Revenue Growth   +15%
+EPS Growth       +12%
+```
+
+When viewed separately, each data point tells only part of the story.
+
+IDX Sectors 2030 connects them:
+
+```
+BUSINESS EVENT
+       +
+SDG RELEVANCE
+       +
+MARKET DATA
+       +
+FUNDAMENTALS
+       +
+SECTOR CONTEXT
+       ↓
+MARKET INTELLIGENCE SIGNAL
+```
+
+## Who is IDX Sectors 2030 for?
+
+### Primary User — Market & Equity Researchers
+
+Market analysts need to continuously identify:
+
+- companies undergoing significant change;
+- unusual market activity;
+- improving or deteriorating fundamentals;
+- sector movements;
+- new business events;
+- changes that are not immediately obvious from a conventional stock screener.
+
+IDX Sectors 2030 helps them move from:
+
+> *Thousands of data points*
+
+to:
+
+> *A small number of meaningful signals worth investigating.*
+
+### Secondary User — Impact & Sustainability Researchers
+
+Researchers focused on sustainable development need more than a list of companies
+claiming to support ESG or sustainability.
+
+They need to know:
+
+- what the company is actually doing;
+- which SDG target the activity relates to;
+- whether the activity is only an intention or already being executed;
+- when the activity is expected to progress;
+- how much execution runway remains before 2030.
 
 > **Research intelligence only.** Not investment advice. No price prediction, no
 > buy/sell recommendations.
