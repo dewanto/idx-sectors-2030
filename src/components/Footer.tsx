@@ -76,7 +76,15 @@ export default function Footer({ t, locale }: { t: Dict["footer"]; locale?: Loca
               </div>
             )}
             <div className="mt-4 flex flex-wrap gap-2 font-data text-[9px] uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              <span className="border border-[color:var(--line)] px-2 py-1">Sectors Hackathon 2026</span>
+              <a
+                href="https://hackathon.sectors.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 border border-[color:var(--line)] px-2 py-1 transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--ink)]"
+              >
+                Sectors Hackathon 2026
+                <ArrowUpRight size={9} strokeWidth={1.8} />
+              </a>
               <span className="border border-[color:var(--line)] px-2 py-1">Methodology v1.0.0</span>
               <DataSourceBadge />
             </div>
