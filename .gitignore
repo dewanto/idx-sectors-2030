@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Environment — never commit real secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Local tooling / logs
+*.log
+.freebuff/dev-server.log
+
+# OS
+.DS_Store
+Thumbs.db

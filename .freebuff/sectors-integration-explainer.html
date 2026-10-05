@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sectors API Integration — Visual Explainer</title>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:#12161d; --panel2:#171c25; --line:#242c38;
+    --ink:#e8edf4; --dim:#9aa7b8; --faint:#6b7887;
+    --accent:#00b3a4; --accent2:#5fa8d3; --warn:#ffb224; --bad:#f25c5c; --good:#39c06a;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 120px}
+  code,kbd{font-family:var(--mono);font-size:.88em}
+  code{background:#1b222c;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:#cfe3ff}
+
+  header.hero{padding:72px 0 44px;border-bottom:1px solid var(--line)}
+  .eyebrow{font:600 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(30px,5vw,46px);line-height:1.12;margin:16px 0 14px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{font-size:19px;color:var(--dim);max-width:74ch;margin:0}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .pill{font:600 11px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--dim);background:var(--panel)}
+  .pill.live{color:var(--accent);border-color:var(--accent)}
+
+  h2{font-size:13px;font-family:var(--mono);letter-spacing:.16em;text-transform:uppercase;
+     color:var(--faint);margin:72px 0 22px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  h3{font-size:20px;margin:34px 0 10px;letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  .sub{color:var(--dim)}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .card.accent{border-color:var(--accent)}
+  .card h4{margin:0 0 6px;font-size:15px}
+  .card p{margin:0;font-size:14px;color:var(--dim)}
+
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .stat .n{font:700 30px/1.1 var(--mono);color:var(--accent)}
+  .stat .l{font-size:12.5px;color:var(--dim);margin-top:6px}
+  .stat.warn .n{color:var(--warn)}
+
+  /* ── architecture flow ── */
+  .flow{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;overflow-x:auto}
+  .flow-row{display:flex;align-items:center;gap:12px;min-width:820px}
+  .node{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:132px;text-align:center}
+  .node .t{font:600 12.5px/1.3 var(--mono)}
+  .node .s{font-size:11.5px;color:var(--faint);margin-top:3px}
+  .node.api{border-color:var(--accent2)}
+  .node.api .t{color:var(--accent2)}
+  .node.db{border-color:var(--accent)}
+  .node.db .t{color:var(--accent)}
+  .node.sync{border-color:var(--warn)}
+  .node.sync .t{color:var(--warn)}
+  .arrow{flex:1;min-width:26px;height:2px;background:var(--line);position:relative}
+  .arrow::after{content:"";position:absolute;right:0;top:-3px;border-left:7px solid var(--line);
+    border-top:4px solid transparent;border-bottom:4px solid transparent}
+  .arrow span{position:absolute;left:50%;top:-22px;transform:translateX(-50%);
+    font:600 10px/1 var(--mono);color:var(--faint);white-space:nowrap}
+  .never{margin-top:16px;padding:11px 14px;border:1px dashed var(--bad);border-radius:9px;
+    color:#ffb0b0;font-size:13.5px;background:rgba(242,92,92,.06)}
+
+  /* ── sequence / timeline ── */
+  .steps{position:relative;margin:0;padding:0;list-style:none}
+  .steps::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:2px;background:var(--line)}
+  .steps li{position:relative;padding:0 0 26px 46px}
+  .steps li::before{content:"";position:absolute;left:5px;top:4px;width:18px;height:18px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--accent)}
+  .steps li.warn::before{border-color:var(--warn)}
+  .steps li.bad::before{border-color:var(--bad)}
+  .steps b{color:var(--ink)}
+  .steps .cmds{display:block;margin-top:8px;font-family:var(--mono);font-size:12.5px;
+    background:#1b222c;border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:#cfe3ff;overflow-x:auto;white-space:pre}
+
+  /* ── table ── */
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font:600 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);background:var(--panel2)}
+  tr:last-child td{border-bottom:0}
+  td.mono,th.mono{font-family:var(--mono);font-size:12.5px}
+  .tag{display:inline-block;font:600 10px/1 var(--mono);letter-spacing:.06em;padding:4px 8px;border-radius:5px;text-transform:uppercase}
+  .tag.new{background:rgba(0,179,164,.14);color:var(--accent);border:1px solid rgba(0,179,164,.35)}
+  .tag.mod{background:rgba(95,168,211,.14);color:var(--accent2);border:1px solid rgba(95,168,211,.35)}
+  .tag.del{background:rgba(242,92,92,.13);color:#ff9a9a;border:1px solid rgba(242,92,92,.32)}
+
+  /* ── callouts ── */
+  .callout{border-radius:12px;padding:16px 18px;border:1px solid var(--line);background:var(--panel);
+    border-left:3px solid var(--accent);margin:0 0 14px}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.bad{border-left-color:var(--bad)}
+  .callout .h{font-weight:600;font-size:14px;margin-bottom:5px}
+  .callout p{margin:0;font-size:14px;color:var(--dim)}
+
+  /* ── code ── */
+  pre{background:#0d1117;border:1px solid var(--line);border-radius:12px;padding:16px;
+    overflow-x:auto;font-family:var(--mono);font-size:12.8px;line-height:1.62;color:#d7e3f4;margin:0 0 14px}
+  pre .c{color:#6b7887}
+  pre .k{color:#c792ea}
+  pre .s{color:#a5e6a5}
+  pre .f{color:#82aaff}
+  pre .n{color:#f9a76c}
+
+  /* ── diff-style code fix ── */
+  .fixgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .fixbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0d1117}
+  .fixbox .cap{padding:9px 13px;font:600 11px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+    border-bottom:1px solid var(--line);background:var(--panel2)}
+  .fixbox .cap.bad{color:#ff9a9a}
+  .fixbox .cap.good{color:var(--accent)}
+  .fixbox pre{margin:0;border:0;border-radius:0;background:transparent}
+  .del-line{color:#ff9a9a;background:rgba(242,92,92,.08);display:block;margin:0 -16px;padding:0 16px}
+  .add-line{color:#8fe6c0;background:rgba(57,192,106,.08);display:block;margin:0 -16px;padding:0 16px}
+
+  /* ── credit meter ── */
+  .meter{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .meter .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--dim);margin-bottom:9px}
+  .meter .lbl b{color:var(--ink);font-family:var(--mono)}
+  .bar{height:9px;border-radius:999px;background:#1b222c;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+  .bar.warn i{background:linear-gradient(90deg,var(--warn),#ff8f5e)}
+  .meter .note{font-size:12.5px;color:var(--faint);margin-top:9px}
+
+  /* ── badge demo ── */
+  .badge-demo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel2);
+    border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:6px}
+  .b{font:600 10.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;padding:7px 11px;border:1px solid;cursor:pointer;transition:.18s}
+  .b.demo{color:var(--dim);border-color:var(--line)}
+  .b.live{color:var(--accent);border-color:var(--accent);box-shadow:0 0 22px rgba(0,179,164,.16)}
+  .b:hover{transform:translateY(-1px)}
+  .hint{font-size:12.5px;color:var(--faint)}
+
+  /* ── toggle ── */
+  details{border:1px solid var(--line);border-radius:11px;background:var(--panel);padding:0;overflow:hidden}
+  details[open]{padding-bottom:4px}
+  summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:14.5px;list-style:none;
+    display:flex;align-items:center;gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸";color:var(--accent);transition:transform .2s;display:inline-block}
+  details[open] summary::before{transform:rotate(90deg)}
+  summary:hover{background:var(--panel2)}
+  .details-body{padding:0 18px 16px 40px}
+  .details-body p{font-size:14px;color:var(--dim)}
+  .filechip{font-family:var(--mono);font-size:11.5px;color:#cfe3ff;background:#1b222c;
+    border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+
+  .kbd{display:inline-block;font-family:var(--mono);font-size:11px;background:#1b222c;
+    border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:3px 7px;color:var(--dim)}
+
+  footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .bar i{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Technical Explainer · 2026-10-03</div>
+  <h1>Wiring live IDX market data into<br><em>SDG Signal Scout 2030</em></h1>
+  <p class="lede">
+    The dashboard shipped with a seeded synthetic price series. This is how the real
+    <strong>Sectors Financial API v2</strong> replaced it — the architecture, the live
+    responses we discovered, and the six bugs that surfaced along the way.
+  </p>
+  <div class="hero-meta">
+    <span class="pill live">● Verified live</span>
+    <span class="pill">Next.js 16.2.6</span>
+    <span class="pill">PostgreSQL 17.11</span>
+    <span class="pill">Drizzle ORM</span>
+    <span class="pill">API v2 only</span>
+  </div>
+</header>
+
+<!-- ══════════════ 1 · RESULT ══════════════ -->
+<h2>1 · What we ended up with</h2>
+
+<div class="grid g4">
+  <div class="stat"><div class="n">34<span style="font-size:17px;color:var(--faint)">/34</span></div><div class="l">tickers synced from the live API</div></div>
+  <div class="stat"><div class="n">2,142</div><div class="l">real daily price rows in Postgres</div></div>
+  <div class="stat"><div class="n">10/10</div><div class="l">live shape checks passing</div></div>
+  <div class="stat warn"><div class="n">6</div><div class="l">real bugs found &amp; fixed</div></div>
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+  <div class="card accent">
+    <h4>BBCA cross-check — DB vs. API</h4>
+    <p>Not assumed, measured. The value in Postgres matches the API response exactly.</p>
+    <pre style="margin:12px 0 0"><span class="f">close</span>     <span class="n">6100</span>      <span class="c">// 2026-10-02 · API returned 6100</span>
+<span class="f">market cap</span> <span class="n">744458</span> B   <span class="c">// 744,458,026,950,000 IDR ÷ 1e9</span></pre>
+  </div>
+  <div class="card">
+    <h4>The seeded values were fiction</h4>
+    <p>The seed listed BBCA at <code>9,550</code> and BREN at <code>9,400</code>. Real closes are
+    <code>6,100</code> and a market cap of <code>744 T</code> IDR. Every market number in the UI
+    is now genuine.</p>
+  </div>
+</div>
+
+<!-- ══════════════ 2 · ARCHITECTURE ══════════════ -->
+<h2>2 · Architecture: sync-to-Postgres, never live-proxy</h2>
+
+<p class="sub">
+  Every page runs relational SQL across six joined tables (signals × companies × events × goals ×
+  snapshots). Proxying the API per pageview would burn credits on each click and force a rewrite
+  of the whole data layer. So a script fills the same database and the query layer stays untouched.
+</p>
+
+<div class="flow">
+  <div class="flow-row">
+    <div class="node api">
+      <div class="t">Sectors API</div>
+      <div class="s">api.sectors.app/v2</div>
+    </div>
+    <div class="arrow"><span>1 credit / ticker</span></div>
+    <div class="node sync">
+      <div class="t">db:sync</div>
+      <div class="s">tsx · idempotent</div>
+    </div>
+    <div class="arrow"><span>upsert</span></div>
+    <div class="node db">
+      <div class="t">PostgreSQL</div>
+      <div class="s">5 tables</div>
+    </div>
+    <div class="arrow"><span>plain SQL</span></div>
+    <div class="node">
+      <div class="t">Next pages</div>
+      <div class="s">queries.ts</div>
+    </div>
+  </div>
+  <div class="never">
+    <strong>Constraint:</strong> the API key never enters a request path. It is read only by the
+    sync script and server-side lib. Requests without a key fall back to the seeded dataset
+    instead of breaking.
+  </div>
+</div>
+
+<!-- ══════════════ 3 · WHAT CHANGED ══════════════ -->
+<h2>3 · What changed on disk</h2>
+
+<table>
+  <thead><tr><th style="width:44px">Kind</th><th class="mono">File</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><span class="tag new">new</span></td><td class="mono">src/lib/sectors.ts</td>
+        <td>Typed API client — auth header, global pacer, retry/backoff, credit budget, pagination</td></tr>
+    <tr><td><span class="tag new">new</span></td><td class="mono">src/db/sync.ts</td>
+        <td>Incremental idempotent sync; recomputes snapshots &amp; intel scores locally (0 credits)</td></tr>
+    <tr><td><span class="tag new">new</span></td><td class="mono">src/db/smoke-sectors.ts</td>
+        <td>2-credit live shape verification before trusting the client</td></tr>
+    <tr><td><span class="tag new">new</span></td><td class="mono">drizzle.config.ts</td>
+        <td>Replaced <code>drizzle.config.json</code> — JSON cannot read env vars</td></tr>
+    <tr><td><span class="tag new">new</span></td><td class="mono">.env.example<br>.env.production.example<br>.gitignore</td>
+        <td>Templates without secrets; Supabase pooled-vs-direct guidance</td></tr>
+    <tr><td><span class="tag mod">mod</span></td><td class="mono">src/db/schema.ts</td>
+        <td>Added <code>sync_state</code> table — drives incremental pulls and the live/demo badge</td></tr>
+    <tr><td><span class="tag mod">mod</span></td><td class="mono">src/components/Footer.tsx</td>
+        <td>Async server component showing which dataset is live</td></tr>
+    <tr><td><span class="tag mod">mod</span></td><td class="mono">package.json</td>
+        <td><code>db:push</code> · <code>db:seed</code> · <code>db:sync</code> · <code>db:smoke</code></td></tr>
+    <tr><td><span class="tag del">del</span></td><td class="mono">drizzle.config.json</td>
+        <td>Superseded by the TS config</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════ 4 · API FACTS ══════════════ -->
+<h2>4 · What the API actually returned</h2>
+
+<p class="sub">
+  Docs describe endpoints; the wire format is where integration breaks. Each row below was
+  confirmed against a live response before any code depended on it.
+</p>
+
+<table>
+  <thead><tr><th class="mono">Endpoint</th><th class="mono">Credit</th><th>Verified shape &amp; gotcha</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="mono">/daily/{symbol}/</td><td class="mono">1</td>
+      <td><code>{symbol:"BBCA.JK", date, open, high, low, close, volume, market_cap}</code><br>
+          <strong>Three traps:</strong> the <code>.JK</code> suffix must be stripped; market cap is
+          <strong>full IDR</strong> (schema wants billions → ÷1e9); the window clamps to 90 days.</td>
+    </tr>
+    <tr>
+      <td class="mono">/companies/</td><td class="mono">1<br><span style="color:var(--warn)">3 for ?q=</span></td>
+      <td><code>{results:[…], pagination:{total_count, has_next, next_offset}}</code>, 962 IDX names.
+          <code>sub_sector='banks'</code> filters (48 rows); <code>symbol in […]</code> returns
+          <strong>0 rows</strong> — that field is not filterable, so page and filter client-side.</td>
+    </tr>
+    <tr>
+      <td class="mono">/company/report/{symbol}/</td><td class="mono">1 <em>per section</em></td>
+      <td>Growth arrives as <strong>fractions</strong> (0.0493 = 4.93%), needing ×100.
+          <code>financials.yoy_quarter_earnings_growth</code>, <code>dividend.yield_ttm</code>,
+          <code>future.company_growth_forecasts[].eps_growth</code>.</td>
+    </tr>
+    <tr>
+      <td class="mono">auth</td><td class="mono">—</td>
+      <td>Raw key in the <code>Authorization</code> header — <strong>no <code>Bearer</code> prefix</strong>.
+          v1 was discontinued 2026-05-11 and now returns 410 Gone.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <div class="h">Billing is asymmetric — design around it</div>
+  <p><code>2xx</code> and <code>404</code> consume credits; <code>400</code>, <code>401/403</code>,
+     <code>429</code> and <code>5xx</code> are free. Empty result sets return <code>200</code>, not an error.
+     So a malformed query costs nothing, but a valid request for a symbol that doesn't exist still bills.</p>
+</div>
+
+<!-- ══════════════ 5 · SYNC ══════════════ -->
+<h2>5 · How a sync run behaves</h2>
+
+<ol class="steps">
+  <li>
+    <b>Resolve the universe</b> — <code>curated</code> (default) reuses the 34 companies already in
+    the database; <code>all</code> pages the full screener and inserts newcomers.
+  </li>
+  <li>
+    <b>Pull prices</b> — first run replaces the synthetic series with a trailing 90-day window;
+    later runs request only trading days after <code>sync_state.last_trading_date</code>.
+    <span class="cmds">npm run db:sync</span>
+  </li>
+  <li>
+    <b>Backfill gaps</b> — any ticker left with zero rows (from an earlier rate-limited run) is
+    automatically re-pulled with a full window instead of being skipped forever.
+  </li>
+  <li>
+    <b>Refresh fundamentals</b> — only for companies missing a row by default;
+    <code>--full</code> forces all of them.
+    <span class="cmds">npm run db:sync -- --full      # +3 credits per company</span>
+  </li>
+  <li>
+    <b>Recompute derived data (0 credits)</b> — snapshots and market-intel scores are recalculated
+    locally using the exact same formulas as <code>seed.ts</code>, so live and demo data score identically.
+  </li>
+  <li>
+    <b>Persist state</b> — <code>sync_state</code> is written <em>even when a later stage fails</em>,
+    so a crash never causes the next run to re-burn the full window.
+  </li>
+</ol>
+
+<div class="grid g2" style="margin-top:8px">
+  <div class="meter">
+    <div class="lbl"><span>Typical daily run — <b>curated</b></span><b>≈34 credits</b></div>
+    <div class="bar"><i data-w="17%"></i></div>
+    <div class="note">1 credit × 34 tickers. Fundamental refresh stays off the daily path.</div>
+  </div>
+  <div class="meter">
+    <div class="lbl"><span><code>--full</code> monthly refresh</span><b>≈136 credits</b></div>
+    <div class="bar warn"><i data-w="68%"></i></div>
+    <div class="note">34 companies × 3 report sections. Budget guard defaults to 200 per run.</div>
+  </div>
+</div>
+
+<!-- ══════════════ 6 · BUGS ══════════════ -->
+<h2>6 · Six bugs, and what they taught us</h2>
+
+<div class="grid g2">
+  <div class="card">
+    <h4><span style="color:var(--warn)">01</span> &nbsp;Empty string beat a valid fallback</h4>
+    <p><code>DIRECT_URL=</code> is not nullish, so <code>DIRECT_URL ?? DATABASE_URL</code> returned
+       the empty string and Drizzle refused to connect. Fixed by treating blanks as unset.</p>
+  </div>
+  <div class="card">
+    <h4><span style="color:var(--warn)">02</span> &nbsp;Rate limiting ate a third of the sync</h4>
+    <p>Nine tickers hit <code>429</code>. Per-request retries at 750 ms were far too aggressive
+       against the plan limit — added a global pacer, 429-specific 5→10→20 s backoff, and cut
+       concurrency from 5 to 3.</p>
+  </div>
+  <div class="card">
+    <h4><span style="color:var(--bad)">03</span> &nbsp;Suspended stocks produced <code>NaN</code></h4>
+    <p>A halted name returns a constant close with zero volume, so the volume ratio became
+       <code>0/0 = NaN</code> — which poisoned the score and aborted the whole derived stage.</p>
+  </div>
+  <div class="card">
+    <h4><span style="color:var(--bad)">04</span> &nbsp;A crash re-burnt every credit</h4>
+    <p>Sync state was saved only on the success path. One failure meant the next run re-pulled the
+       whole 90-day window. State is now persisted on every partial-failure path.</p>
+  </div>
+  <div class="card">
+    <h4><span style="color:var(--warn)">05</span> &nbsp;Failed tickers stayed empty forever</h4>
+    <p>Incremental pulls start at <code>lastTradingDate + 1</code>, so a ticker missed by a 429 never
+       recovered. Now zero-row tickers get a full-window backfill.</p>
+  </div>
+  <div class="card">
+    <h4><span style="color:var(--warn)">06</span> &nbsp;Redundant work in the hot loop</h4>
+    <p>The intel stage computed the score twice and re-read the snapshot it had just written.
+       Refactored to carry values in a map — one query fewer per company.</p>
+  </div>
+</div>
+
+<h3>The one-line fix that mattered most</h3>
+<div class="fixgrid">
+  <div class="fixbox">
+    <div class="cap bad">Before — suspended name</div>
+    <pre><span class="c">// 0 / 0 → NaN</span>
+<span class="k">const</span> volRatio = +(recent / base).toFixed(2);</pre>
+  </div>
+  <div class="fixbox">
+    <div class="cap good">After — neutral fallback</div>
+    <pre><span class="c">// base 0 ⇒ no trading ⇒ neutral 1.0</span>
+<span class="k">const</span> volRatio =
+  base &gt; 0 &amp;&amp; Number.isFinite(recent / base)
+    ? +(recent / base).toFixed(2) : <span class="n">1</span>;</pre>
+  </div>
+</div>
+
+<!-- ══════════════ 7 · BADGE ══════════════ -->
+<h2>7 · User-visible result: the source badge</h2>
+
+<p class="sub">
+  With no API key the app must not look broken — it should simply be honest about which dataset
+  it is serving. The footer badge reads <code>sync_state</code> and is wrapped in a try/catch so a
+  database hiccup can never take a page down.
+</p>
+
+<div class="badge-demo">
+  <span class="b demo" data-mode="demo">Demo dataset</span>
+  <span class="b live" data-mode="live">Live · Sectors API</span>
+  <span class="hint">Toggle to compare — hover for last-sync details</span>
+</div>
+
+<div class="callout" style="margin-top:16px">
+  <div class="h">Fallback is a feature, not an error path</div>
+  <p>Remove <code>SECTORS_API_KEY</code> and <code>db:sync</code> exits early with a clear message
+     while the app keeps serving the seeded dataset. Development never depends on a paid API key.</p>
+</div>
+
+<!-- ══════════════ 8 · ENV ══════════════ -->
+<h2>8 · Environment variables</h2>
+
+<details open>
+  <summary><span class="filechip">.env</span> Sectors + Segments + Supabase</summary>
+  <div class="details-body">
+<pre><span class="c"># Local Postgres</span>
+<span class="f">DATABASE_URL</span>=postgresql://postgres:postgres@127.0.0.1:5432/app_db
+
+<span class="c"># Sectors Financial API (IDX) — server-side only</span>
+<span class="f">SECTORS_API_KEY</span>=                  <span class="c"># sectors.app/api · Insider plan</span>
+<span class="f">SECTORS_API_BASE_URL</span>=https://api.sectors.app/v2
+<span class="f">SECTORS_UNIVERSE</span>=curated          <span class="c"># curated | all</span>
+<span class="f">SECTORS_DAILY_CREDIT_BUDGET</span>=200
+<span class="f">SECTORS_MIN_INTERVAL_MS</span>=1500      <span class="c"># global pacer between calls</span>
+
+<span class="c"># Segments.ai — reserved, no integration yet</span>
+<span class="f">SEGMENTS_API_KEY</span>=
+<span class="f">SEGMENTS_API_BASE_URL</span>=https://api.segments.ai
+
+<span class="c"># Supabase production</span>
+<span class="f">DATABASE_URL</span>=                     <span class="c"># POOLED  :6543 (pgbouncer) — app runtime</span>
+<span class="f">DIRECT_URL</span>=                       <span class="c"># DIRECT :5432 — migrations only</span></pre>
+  </div>
+</details>
+
+<div class="callout warn" style="margin-top:14px">
+  <div class="h">The pooled connection is not optional</div>
+  <p>Serverless instances exhaust direct Postgres connections. Point <code>DATABASE_URL</code> at the
+     pooled string, but keep <code>DIRECT_URL</code> on the direct one — Drizzle's schema
+     introspection breaks behind pgbouncer in transaction mode.</p>
+</div>
+
+<!-- ══════════════ 9 · RUNBOOK ══════════════ -->
+<h2>9 · Runbook</h2>
+
+<pre><span class="c"># Node is not on the inherited PATH in this shell</span>
+<span class="k">export</span> PATH="/c/Program Files/nodejs:$PATH"
+
+npm run db:smoke               <span class="c"># 2 credits — verify the API shape first</span>
+npm run db:sync                <span class="c"># ~34 credits — daily path</span>
+npm run db:sync -- --full      <span class="c"># ~136 credits — monthly fundamentals</span>
+npm run db:sync                <span class="c"># exit 2 ⇒ some tickers were rate-limited; just re-run</span>
+npm run typecheck &amp;&amp; npm run lint</pre>
+
+<div class="grid g3" style="margin-top:6px">
+  <div class="card"><h4>Exit 0</h4><p>Everything synced and recomputed.</p></div>
+  <div class="card"><h4>Exit 1</h4><p>No API key, or nothing synced. Database untouched, app keeps serving seed data.</p></div>
+  <div class="card"><h4>Exit 2</h4><p>Partial — some tickers rate-limited. Re-run: empty tickers backfill automatically.</p></div>
+</div>
+
+<footer>
+  Verified live against <strong>api.sectors.app/v2</strong> on 2026-10-03 · 34/34 tickers ·
+  2,142 price rows · 34 snapshots · 34 intel scores · 0 NaN · ~70 credits spent in total.
+  <br/>Market figures are research intelligence, not investment advice. SDG classification is a
+  system-generated evidence mapping, not UN endorsement.
+</footer>
+
+</div>
+
+<script>
+  // Animate the credit meters when they scroll into view (respects reduced-motion).
+  const bars = document.querySelectorAll('.bar i');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fill(el){ el.style.width = el.dataset.w; }
+  if (reduce || !('IntersectionObserver' in window)) {
+    bars.forEach(fill);
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { fill(e.target); io.unobserve(e.target); } });
+    }, { threshold: .4 });
+    bars.forEach(b => io.observe(b));
+    /* Safety net: never let a meter render empty if the observer never fires. */
+    setTimeout(() => bars.forEach(b => { if (!b.style.width) fill(b); }), 2500);
+  }
+
+  // Badge demo — toggle which state is highlighted.
+  const demo = document.querySelector('[data-mode="demo"]');
+  const live = document.querySelector('[data-mode="live"]');
+  let showLive = true;
+  function paint(){
+    demo.classList.toggle('live', !showLive);
+    demo.style.opacity = showLive ? .45 : 1;
+    live.classList.toggle('live', showLive);
+    live.style.opacity = showLive ? 1 : .45;
+  }
+  [demo, live].forEach(b => b.addEventListener('click', () => { showLive = b === live; paint(); }));
+  paint();
+</script>
+</body>
+</html>
