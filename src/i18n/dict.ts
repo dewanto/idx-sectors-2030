@@ -375,39 +375,149 @@ const en = {
       "Global context reflects UN monitoring of the 2030 Agenda (annual SDG Progress Reports and the four-year Global Sustainable Development Report cycle, next edition September 2027). It is a contextual research-priority input — it is not attributed to, nor derived from, any individual company.",
   },
   about: {
-    badge: "About",
-    titleA: "Execution intelligence for the",
-    titleB: "2030 deadline",
-    sub: "IDX Sectors 2030 maps the SDG execution of Indonesian listed companies to market evidence — business events, price dislocation, foreign positioning and cycle timing. A research instrument, not investment advice.",
+    /* 01 — THE 2030 THESIS */
+    heroEyebrow: "01 — THE 2030 THESIS",
+    heroHeadline: "THE WORLD HAS A PLAN.",
+    heroIntro:
+      "In 2015, the United Nations adopted the 2030 Agenda for Sustainable Development — a universal framework built around 17 Sustainable Development Goals and 169 targets.",
+    heroExecution: "But a global agenda only matters when it becomes real-world execution.",
+    heroExecutionList: ["Projects.", "Investment.", "Infrastructure.", "Technology.", "Operations.", "Outcomes."],
+    heroQuestion: "WHO IS ACTUALLY EXECUTING THE FUTURE?",
+    heroQuestionLead: "Companies are where much of that economic execution becomes observable.",
+    heroQuestionSub:
+      "IDX Sectors 2030 connects global SDG priorities with Indonesian listed companies, business evidence and Sectors market data to help researchers identify what deserves attention.",
+    thesisFlow: ["GLOBAL GOALS", "COMPANY EXECUTION", "MARKET SIGNALS", "RESEARCH PRIORITY"],
+
+    /* 02 — WHY 2030 MATTERS */
+    whyTitle: "WHY 2030 MATTERS",
+    whySub: "The SDGs are not company labels — they are a shared global direction.",
+    whyBody1:
+      "The 2030 Agenda establishes a global implementation horizon through 2030. The 17 Sustainable Development Goals and 169 targets provide a common framework for action — a shared direction for sustainable development.",
+    whyBody2:
+      "But goals do not execute themselves. They must become real economic activity: projects, capital allocation, infrastructure, technology, operational change and measurable outcomes.",
+    financingCallout: "~US$4 trillion annual SDG investment gap in developing countries",
     statCompanies: "companies",
     statPrices: "price rows",
     statCredits: "credits used",
-    whyTitle: "Why 2030 matters",
-    whySub: "The deadline is not symbolic — it is a financing and re-rating clock.",
-    whyItems: [
-      { title: "The UN 2030 Agenda ends in 2030", body: "The 17 Sustainable Development Goals and 169 targets expire in 2030. Meeting them needs roughly US$4 trillion a year of additional financing in developing countries — private capital and capital markets are the channel that can close the gap." },
-      { title: "Why IDX companies", body: "900+ listed Indonesian companies disclose under OJK rules, so SDG execution — energy transition, digitalisation, water and sanitation — can be audited from public data instead of marketing claims." },
-      { title: "Why now", body: "About four years remain. Allocation decisions made today — which projects get funded, which milestones get executed — decide who captures the SDG premium as 2030 reprices execution." },
-      { title: "Why cycle timing", body: "Markets discount execution years in advance. The 432-day cycle framework gives a timing context for when dislocations tend to close — the bridge between evidence and entry." },
-    ],
     refsTitle: "Official references",
     refs: [
       { label: "Transforming our world: the 2030 Agenda for Sustainable Development", note: "The UN resolution that defines the 17 goals and 169 targets." },
       { label: "The 17 Sustainable Development Goals", note: "Official goal pages — the numbering and naming used throughout this site." },
       { label: "UN SDG Indicators", note: "The official indicator catalogue behind the evidence-scoring vocabulary." },
+      { label: "UNCTAD World Investment Report", note: "Source of the ~US$4 trillion annual SDG financing-gap estimate for developing countries." },
     ],
-    methodTitle: "How decisions are made",
-    methodSub: "Every score on this site is reproducible from stored data. No oracle, no black box.",
-    methodSteps: [
-      { title: "Data pipeline", body: "Sectors.app v2 to PostgreSQL, incremental and idempotent: trading-day probe, per-source watermark, a 1,000-credit lifetime budget guard. All scores are recomputed locally from stored prices — 0 API credits." },
-      { title: "Market score (0-100)", body: "Price dislocation, volume anomaly, relative strength vs sector, fundamental context and industry context compose a 100-point score. Every row stores its methodology_version so any number can be audited across time." },
-      { title: "SDG execution evidence", body: "Business events are mapped to official UN SDG goals and targets (DIRECT / INDIRECT / ASPIRATIONAL) with an evidence score, source tier, investment materiality and pipeline stage." },
-      { title: "Cycle timing (Gann 432)", body: "The zero point is auto-detected from index history (2026-06-08 @ 5,342.14), then 144/288/432/576-day windows are computed. Windows are timing context — never a buy or sell signal." },
+
+    /* 03 — COMPANIES ARE THE EXECUTION LAYER */
+    layerTitle: "COMPANIES ARE THE EXECUTION LAYER",
+    layerSub: "Global goals define what matters. Companies translate priorities into economic activity.",
+    layerBody: "That activity can become observable through public disclosures:",
+    layerList: ["business events", "investment", "infrastructure", "contracts", "technology deployment", "operational changes", "measurable outcomes"],
+    layerFlow: ["GLOBAL AGENDA", "ECONOMIC ACTIVITY", "COMPANY EXECUTION", "MARKET RESPONSE"],
+    layerQuote1: "The objective is not to label companies as “SDG companies”.",
+    layerQuote2: "The objective is to identify where meaningful execution is taking place.",
+
+    /* 04 — ALIGNMENT IS NOT ENOUGH */
+    alignTitle: "ALIGNMENT IS NOT ENOUGH.",
+    alignLeft: "SDG ALIGNMENT",
+    alignNeq: "≠",
+    alignRight: "EXECUTION",
+    alignFormula: ["SDG RELEVANCE", "BUSINESS EVIDENCE", "EXECUTION STAGE", "MARKET CONTEXT", "TIMING", "RESEARCH PRIORITY"],
+    alignBody1: "An SDG reference by itself is not enough.",
+    alignBody2: "IDX Sectors 2030 is designed to move from thematic alignment toward evidence-backed execution.",
+
+    /* 05 — THE RESEARCH QUESTION */
+    questionTitle: "THE QUESTION WE ARE TRYING TO ANSWER",
+    questionBig:
+      "Which companies are actually executing activities relevant to the 2030 agenda — and which ones deserve research attention now?",
+    questionBody: "A researcher may not need another dashboard.",
+    questionBody2: "They need to know where to look first.",
+
+    /* 06 — FROM GLOBAL GOALS TO MARKET SIGNALS */
+    chainTitle: "FROM GLOBAL GOALS TO MARKET SIGNALS",
+    chainSub: "One evidence chain, from global priority to research priority.",
+    chainFlow: ["UNITED NATIONS 2030 AGENDA", "17 SDGs", "169 TARGETS", "BUSINESS EVENTS", "COMPANY EXECUTION", "SECTORS MARKET DATA", "DERIVED SIGNALS", "RESEARCH PRIORITY"],
+    chainQa: [
+      { k: "SDG", q: "What matters globally?" },
+      { k: "Company Evidence", q: "Who is actually executing?" },
+      { k: "Sectors Market Data", q: "How is the market behaving?" },
+      { k: "Timing", q: "Why might this deserve attention now?" },
+      { k: "Derived Signal", q: "Where should the researcher look first?" },
+    ],
+
+    /* 07 — HOW THE INTELLIGENCE IS DERIVED */
+    methodTitle: "HOW THE INTELLIGENCE IS DERIVED",
+    methodSub: "Every score is reproducible from stored data. No oracle, no black box.",
+    methodSplit: [
+      { pct: "70%", label: "Sectors-derived market layer" },
+      { pct: "20%", label: "Business-event evidence" },
+      { pct: "10%", label: "SDG / 2030 dimension" },
+    ],
+    methodNote: "This is the IDX Sectors 2030 product methodology, not an official Sectors formula.",
+    methodLayers: [
+      { title: "Market layer", items: ["Price dislocation", "Volume anomaly", "Relative performance vs sector", "Fundamental context", "Market / industry context"] },
+      { title: "Evidence layer", items: ["Business event", "Source quality", "Event materiality", "Execution stage"] },
+      { title: "SDG / 2030 layer", items: ["SDG target relevance", "Execution timing"] },
+    ],
+    methodPipeline: {
+      title: "Data pipeline & reproducibility",
+      body: "Sectors.app v2 → PostgreSQL, incremental and idempotent: trading-day probe, per-source watermark, a 1,000-credit lifetime budget guard. Scores are recomputed locally from stored prices — 0 API credits — and every row stores its methodology_version so any number can be audited across time.",
+    },
+
+    /* 08 — WHY SECTORS IS CORE */
+    sectorsTitle: "WHY SECTORS IS CORE",
+    sectorsSub: "The Sectors market-data layer is part of the core intelligence engine — not decoration.",
+    sectorsBody1: "The SDGs tell us what matters globally.",
+    sectorsBody2: "Company evidence tells us who is executing.",
+    sectorsBody3: "Sectors tells us how the market is behaving around that execution.",
+    sectorsBody4: "IDX Sectors 2030 connects these layers.",
+    sectorsFormula: [
+      { k: "SDG", q: "What matters globally?" },
+      { k: "COMPANY EVIDENCE", q: "Who is executing?" },
+      { k: "SECTORS", q: "How is the market responding?" },
+    ],
+    sectorsResult: "MARKET INTELLIGENCE",
+
+    /* 09 — A SIGNAL IS NOT JUST A SCORE */
+    signalTitle: "A SIGNAL IS NOT JUST A SCORE",
+    signalSub: "Every signal carries its own reasoning, component by component.",
+    signalQuestions: ["WHY THIS COMPANY?", "WHY THIS EVENT?", "WHY THIS SDG TARGET?", "WHY THIS MARKET CONTEXT?", "WHY NOW?"],
+    signalFormula: ["Signal Strength", "SDG Evidence", "Market Context", "Timing", "Execution Stage", "Evidence"],
+    signalBody:
+      "Signal Detail lets the researcher investigate the reason behind a signal: every component stores its metric, benchmark, weight, contribution and a plain-language explanation.",
+
+    /* 10 — THE 2030 EXECUTION CLOCK */
+    clockTitle: "THE 2030 EXECUTION CLOCK",
+    clockSub: "A fixed system clock keeps every number on the same page.",
+    clockBody:
+      "The product runs on a fixed system date — 28 Sep 2026 — counting down to 31 Dec 2030. As 2030 approaches, the remaining execution horizon becomes increasingly relevant to research and capital-allocation decisions.",
+    clockNow: "System clock · 28 Sep 2026",
+    clockAdopted: "UN agenda adopted · 25 Sep 2015",
+    clockDeadline: "Deadline · 31 Dec 2030",
+    clockDays: "D-1,555",
+
+    /* 11 — ADDITIONAL TIME CONTEXT */
+    gannTitle: "ADDITIONAL TIME CONTEXT",
+    gannSub: "A time-cycle overlay — context, never a trigger.",
+    gannBody1: "IDX Sectors 2030 also includes a 144 / 288 / 432-day time-cycle module.",
+    gannBody2:
+      "This layer provides timing context for research. It is not a standalone trading system. It is not a price prediction engine. It does not generate buy or sell recommendations.",
+    gannDetails: [
+      { title: "Cycle windows", body: "The zero point is auto-detected from stored index history (2026-06-08 @ 5,342.14), then 144/288/432/576-day windows are computed. Windows are timing context — never a buy or sell signal." },
       { title: "Foreign positioning", body: "Net foreign flow summed over the trailing 20 trading days confirms whether foreign money supports or fades the thesis." },
-      { title: "Confluence, not oracle", body: "Decisions surface as confluence of evidence: market score, SDG evidence, foreign flow and cycle proximity. The site never prints buy/sell labels — by design, not omission." },
+      { title: "Confluence, not oracle", body: "Conclusions surface as a confluence of evidence: market score, SDG evidence, foreign flow and cycle proximity. The site never prints buy/sell labels — by design, not omission." },
     ],
-    transTitle: "Transparency & limits",
-    transSub: "What this site knows, and what it honestly does not.",
+
+    /* 12 — WHO IS THIS FOR? */
+    whoTitle: "WHO IS THIS FOR?",
+    whoSub: "Two research audiences, one evidence chain.",
+    who: [
+      { role: "Primary", title: "Market & Equity Researchers", body: "Researchers who need to identify companies undergoing meaningful change and decide which situations deserve deeper investigation." },
+      { role: "Secondary", title: "Sustainability & Impact Researchers", body: "Researchers who need to move beyond corporate claims and investigate observable business execution related to SDG targets." },
+    ],
+
+    /* 13 — TRANSPARENCY & LIMITS */
+    transTitle: "TRANSPARENCY & LIMITS",
+    transSub: "What the system knows — and what it honestly does not.",
     transItems: [
       { title: "Live vs demo data", body: "The footer badge shows whether live Sectors data is loaded and how many lifetime credits remain. Without an API key the app serves the seeded demonstration dataset." },
       { title: "Depth of history", body: "Per-ticker price history covers a rolling ~90-day window; conclusions are short-horizon by construction." },
@@ -415,13 +525,26 @@ const en = {
       { title: "Curated universe", body: "A 20-name watchlist receives live data daily; the rest of the universe ages gracefully and is labelled with a staleness chip." },
       { title: "Not investment advice", body: "Scores describe evidence and dislocation. They are inputs for your own research, not recommendations." },
     ],
-    readTitle: "How to read this site",
-    readSub: "Three surfaces, one evidence chain.",
-    readSteps: [
-      { title: "Dashboard", body: "Ranking of companies by market-intelligence score, with SDG evidence and execution stage." },
-      { title: "Company pages", body: "Per-ticker: signal breakdown, SDG mapping with evidence, timing windows and price-floor bands." },
-      { title: "Gann 432", body: "The index-level cycle: detected zero point, window countdowns and per-ticker confluence." },
+
+    /* 14 — ONE QUESTION. ONE EVIDENCE CHAIN. */
+    flowTitle: "ONE QUESTION. ONE EVIDENCE CHAIN.",
+    flowSub: "From a global priority to a verified, ranked research queue.",
+    flowChain: ["DEFINE PRIORITY", "SELECT SDG / TARGET", "FILTER EXECUTION", "FILTER EVIDENCE", "ADD MARKET CONTEXT", "SCAN", "RANKED SIGNALS", "INVESTIGATE", "VERIFY"],
+    flowPages: [
+      { path: "/goals", label: "SDG Map", use: "Select the global priority — SDG goal and target definitions." },
+      { path: "/picker", label: "Company Picker", use: "Define priority, filter by SDG relevance, execution stage and evidence, then scan." },
+      { path: "/engine", label: "Regime Engine", use: "See the full market-context layer behind the scores." },
+      { path: "/companies/[ticker]", label: "Company pages", use: "Investigate a company's evidence, SDG mappings and price-floor bands." },
+      { path: "/signals/[id]", label: "Signal Detail", use: "Investigate one signal's reasoning, component by component." },
+      { path: "/gann", label: "Gann 432", use: "Verify timing context on the index-level cycle." },
     ],
+
+    /* 15 — FINAL THESIS */
+    finalLines: ["THE WORLD HAS A PLAN.", "COMPANIES EXECUTE IT.", "MARKETS REVEAL SIGNALS."],
+    finalBrand: "IDX SECTORS 2030",
+    finalChips: ["Global Goals.", "Company Execution.", "Market Signals."],
+    finalTagline: "FIND THE COMPANIES EXECUTING THE FUTURE.",
+    finalDisclaimer: "Research intelligence only. Not investment advice.",
     disclaimer: "IDX Sectors 2030 is a research instrument built on public data. Nothing here is investment advice or a solicitation to trade.",
   },
 
@@ -1135,39 +1258,149 @@ const id: Dict = {
       "Konteks global mencerminkan pemantauan PBB atas Agenda 2030 (Laporan Kemajuan SDG tahunan dan siklus empat tahun Global Sustainable Development Report, edisi berikutnya September 2027). Ini adalah masukan prioritas riset kontekstual — tidak diatribusikan kepada, maupun diturunkan dari, perusahaan mana pun.",
   },
   about: {
-    badge: "Tentang",
-    titleA: "Intelijen eksekusi menuju",
-    titleB: "tenggat 2030",
-    sub: "IDX Sectors 2030 memetakan eksekusi SDG emiten Indonesia ke bukti pasar — peristiwa bisnis, dislokasi harga, posisi asing, dan timing siklus. Instrumen riset, bukan nasihat investasi.",
+    /* 01 — TESIS 2030 */
+    heroEyebrow: "01 — TESIS 2030",
+    heroHeadline: "DUNIA PUNYA RENCANA.",
+    heroIntro:
+      "Pada 2015, Perserikatan Bangsa-Bangsa mengadopsi Agenda Pembangunan Berkelanjutan 2030 — kerangka universal yang dibangun di sekitar 17 Tujuan Pembangunan Berkelanjutan dan 169 target.",
+    heroExecution: "Tapi agenda global hanya berarti ketika ia menjadi eksekusi dunia nyata.",
+    heroExecutionList: ["Proyek.", "Investasi.", "Infrastruktur.", "Teknologi.", "Operasi.", "Hasil."],
+    heroQuestion: "SIAPA YANG BENAR-BENAR MENGEKSEKUSI MASA DEPAN?",
+    heroQuestionLead: "Perusahaan adalah tempat sebagian besar eksekusi ekonomi itu menjadi dapat diamati.",
+    heroQuestionSub:
+      "IDX Sectors 2030 menghubungkan prioritas SDG global dengan emiten Indonesia, bukti bisnis, dan data pasar Sectors untuk membantu peneliti mengidentifikasi apa yang layak mendapat perhatian.",
+    thesisFlow: ["TUJUAN GLOBAL", "EKSEKUSI PERUSAHAAN", "SINYAL PASAR", "PRIORITAS RISET"],
+
+    /* 02 — MENGAPA 2030 PENTING */
+    whyTitle: "MENGAPA 2030 PENTING",
+    whySub: "SDG bukan label perusahaan — ia arah global bersama.",
+    whyBody1:
+      "Agenda 2030 menetapkan horizon implementasi global hingga 2030. 17 Tujuan Pembangunan Berkelanjutan dan 169 target memberikan kerangka aksi bersama — arah bersama untuk pembangunan berkelanjutan.",
+    whyBody2:
+      "Tapi tujuan tidak mengeksekusi dirinya sendiri. Ia harus menjadi aktivitas ekonomi nyata: proyek, alokasi modal, infrastruktur, teknologi, perubahan operasional, dan hasil yang terukur.",
+    financingCallout: "Defisit investasi SDG ~US$4 triliun per tahun di negara berkembang",
     statCompanies: "perusahaan",
     statPrices: "baris harga",
     statCredits: "kredit terpakai",
-    whyTitle: "Mengapa 2030 penting",
-    whySub: "Tenggat ini bukan simbol — ia jam pendanaan dan re-rating.",
-    whyItems: [
-      { title: "Agenda 2030 PBB berakhir 2030", body: "17 Tujuan Pembangunan Berkelanjutan dan 169 target berakhir 2030. Memenuhinya butuh sekitar US$4 triliun tambahan per tahun di negara berkembang — modal swasta dan pasar modal adalah saluran penutupnya." },
-      { title: "Mengapa emiten IDX", body: "900+ emiten Indonesia wajib disklousur di bawah aturan OJK, sehingga eksekusi SDG — transisi energi, digitalisasi, air dan sanitasi — bisa diaudit dari data publik, bukan klaim marketing." },
-      { title: "Mengapa sekarang", body: "Tersisa sekitar empat tahun. Keputusan alokasi hari ini — proyek mana yang didanai, milestone mana yang dieksekusi — menentukan siapa menangkap SDG premium saat 2030 reprice." },
-      { title: "Mengapa timing siklus", body: "Pasar mendiskon eksekusi bertahun-tahun sebelumnya. Kerangka siklus 432 hari memberi konteks kapan dislokasi cenderung menutup — jembatan antara bukti dan entry." },
-    ],
     refsTitle: "Referensi resmi",
     refs: [
       { label: "Transforming our world: the 2030 Agenda for Sustainable Development", note: "Resolusi PBB yang mendefinisikan 17 tujuan dan 169 target." },
       { label: "The 17 Sustainable Development Goals", note: "Halaman resmi per goal — penomoran dan penamaan yang dipakai seluruh situs ini." },
       { label: "UN SDG Indicators", note: "Katalog indikator resmi di balik kosakata evidence score." },
+      { label: "UNCTAD World Investment Report", note: "Sumber estimasi defisit pendanaan SDG ~US$4 triliun per tahun di negara berkembang." },
     ],
-    methodTitle: "Bagaimana keputusan dibuat",
-    methodSub: "Setiap skor di situs ini dapat direproduksi dari data tersimpan. Tanpa oracle, tanpa black box.",
-    methodSteps: [
-      { title: "Pipeline data", body: "Sectors.app v2 ke PostgreSQL, inkremental dan idempoten: probe hari perdagangan, watermark per sumber, guard anggaran lifetime 1.000 kredit. Semua skor dihitung ulang lokal dari harga tersimpan — 0 kredit API." },
-      { title: "Skor pasar (0-100)", body: "Price dislocation, volume anomaly, relative strength vs sektor, konteks fundamental, dan konteks industri membentuk skor 100 poin. Setiap baris menyimpan methodology_version agar angka bisa diaudit lintas waktu." },
-      { title: "Bukti eksekusi SDG", body: "Peristiwa bisnis dipetakan ke tujuan dan target resmi UN (DIRECT / INDIRECT / ASPIRATIONAL) lengkap dengan evidence score, tier sumber, materialitas investasi, dan tahap pipeline." },
-      { title: "Timing siklus (Gann 432)", body: "Zero point dideteksi otomatis dari riwayat indeks (2026-06-08 @ 5.342,14), lalu jendela 144/288/432/576 hari dihitung. Jendela adalah konteks timing — bukan sinyal beli atau jual." },
+
+    /* 03 — PERUSAHAAN ADALAH LAPISAN EKSEKUSI */
+    layerTitle: "PERUSAHAAN ADALAH LAPISAN EKSEKUSI",
+    layerSub: "Tujuan global menentukan apa yang penting. Perusahaan menerjemahkan prioritas menjadi aktivitas ekonomi.",
+    layerBody: "Aktivitas itu dapat menjadi dapat diamati melalui disklousur publik:",
+    layerList: ["peristiwa bisnis", "investasi", "infrastruktur", "kontrak", "penerapan teknologi", "perubahan operasional", "hasil terukur"],
+    layerFlow: ["AGENDA GLOBAL", "AKTIVITAS EKONOMI", "EKSEKUSI PERUSAHAAN", "RESPONS PASAR"],
+    layerQuote1: "Tujuannya bukan melabeli perusahaan sebagai “perusahaan SDG”.",
+    layerQuote2: "Tujuannya mengidentifikasi di mana eksekusi yang bermakna sedang berlangsung.",
+
+    /* 04 — KESELARASAN SAJA TIDAK CUKUP */
+    alignTitle: "KESELARASAN SAJA TIDAK CUKUP.",
+    alignLeft: "KESELARASAN SDG",
+    alignNeq: "≠",
+    alignRight: "EKSEKUSI",
+    alignFormula: ["RELEVANSI SDG", "BUKTI BISNIS", "TAHAP EKSEKUSI", "KONTEKS PASAR", "TIMING", "PRIORITAS RISET"],
+    alignBody1: "Referensi SDG saja tidak cukup.",
+    alignBody2: "IDX Sectors 2030 dirancang untuk bergerak dari keselarasan tematik menuju eksekusi berbasis bukti.",
+
+    /* 05 — PERTANYAAN RISET */
+    questionTitle: "PERTANYAAN YANG COBA KITA JAWAB",
+    questionBig:
+      "Perusahaan mana yang benar-benar mengeksekusi aktivitas yang relevan dengan agenda 2030 — dan mana yang layak mendapat perhatian riset sekarang?",
+    questionBody: "Seorang peneliti mungkin tidak butuh dashboard lain.",
+    questionBody2: "Mereka butuh tahu harus mulai melihat dari mana.",
+
+    /* 06 — DARI TUJUAN GLOBAL KE SINYAL PASAR */
+    chainTitle: "DARI TUJUAN GLOBAL KE SINYAL PASAR",
+    chainSub: "Satu rantai bukti, dari prioritas global ke prioritas riset.",
+    chainFlow: ["AGENDA 2030 PBB", "17 SDG", "169 TARGET", "PERISTIWA BISNIS", "EKSEKUSI PERUSAHAAN", "DATA PASAR SECTORS", "SINYAL TURUNAN", "PRIORITAS RISET"],
+    chainQa: [
+      { k: "SDG", q: "Apa yang penting secara global?" },
+      { k: "Bukti Perusahaan", q: "Siapa yang benar-benar mengeksekusi?" },
+      { k: "Data Pasar Sectors", q: "Bagaimana pasar berperilaku?" },
+      { k: "Timing", q: "Mengapa ini mungkin layak diperhatikan sekarang?" },
+      { k: "Sinyal Turunan", q: "Ke mana peneliti harus melihat lebih dulu?" },
+    ],
+
+    /* 07 — BAGAIMANA INTELIJEN INI DIDERIVASI */
+    methodTitle: "BAGAIMANA INTELIJEN INI DIDERIVASI",
+    methodSub: "Setiap skor dapat direproduksi dari data tersimpan. Tanpa oracle, tanpa black box.",
+    methodSplit: [
+      { pct: "70%", label: "Lapisan pasar turunan Sectors" },
+      { pct: "20%", label: "Bukti peristiwa bisnis" },
+      { pct: "10%", label: "Dimensi SDG / 2030" },
+    ],
+    methodNote: "Ini metodologi produk IDX Sectors 2030, bukan formula resmi Sectors.",
+    methodLayers: [
+      { title: "Lapisan pasar", items: ["Dislokasi harga", "Anomali volume", "Kinerja relatif vs sektor", "Konteks fundamental", "Konteks pasar / industri"] },
+      { title: "Lapisan bukti", items: ["Peristiwa bisnis", "Kualitas sumber", "Materialitas peristiwa", "Tahap eksekusi"] },
+      { title: "Lapisan SDG / 2030", items: ["Relevansi target SDG", "Timing eksekusi"] },
+    ],
+    methodPipeline: {
+      title: "Pipeline data & reproduksibilitas",
+      body: "Sectors.app v2 → PostgreSQL, inkremental dan idempoten: probe hari perdagangan, watermark per sumber, guard anggaran lifetime 1.000 kredit. Skor dihitung ulang lokal dari harga tersimpan — 0 kredit API — dan setiap baris menyimpan methodology_version agar angka bisa diaudit lintas waktu.",
+    },
+
+    /* 08 — MENGAPA SECTORS INTI */
+    sectorsTitle: "MENGAPA SECTORS INTI",
+    sectorsSub: "Lapisan data pasar Sectors adalah bagian dari mesin intelijen inti — bukan dekorasi.",
+    sectorsBody1: "SDG memberi tahu apa yang penting secara global.",
+    sectorsBody2: "Bukti perusahaan memberi tahu siapa yang mengeksekusi.",
+    sectorsBody3: "Sectors memberi tahu bagaimana pasar berperilaku di sekitar eksekusi itu.",
+    sectorsBody4: "IDX Sectors 2030 menghubungkan ketiganya.",
+    sectorsFormula: [
+      { k: "SDG", q: "Apa yang penting secara global?" },
+      { k: "BUKTI PERUSAHAAN", q: "Siapa yang mengeksekusi?" },
+      { k: "SECTORS", q: "Bagaimana pasar merespons?" },
+    ],
+    sectorsResult: "INTELIJEN PASAR",
+
+    /* 09 — SINYAL BUKAN SEKADAR SKOR */
+    signalTitle: "SINYAL BUKAN SEKADAR SKOR",
+    signalSub: "Setiap sinyal membawa alasannya sendiri, komponen demi komponen.",
+    signalQuestions: ["MENGAPA PERUSAHAAN INI?", "MENGAPA PERISTIWA INI?", "MENGAPA TARGET SDG INI?", "MENGAPA KONTEKS PASAR INI?", "MENGAPA SEKARANG?"],
+    signalFormula: ["Kekuatan Sinyal", "Bukti SDG", "Konteks Pasar", "Timing", "Tahap Eksekusi", "Bukti"],
+    signalBody:
+      "Detail Sinyal memungkinkan peneliti menyelidiki alasan di balik sebuah sinyal: setiap komponen menyimpan metrik, benchmark, bobot, kontribusi, dan penjelasan bahasa sederhana.",
+
+    /* 10 — JAM EKSEKUSI 2030 */
+    clockTitle: "JAM EKSEKUSI 2030",
+    clockSub: "Jam sistem yang tetap menjaga setiap angka di halaman yang sama.",
+    clockBody:
+      "Produk berjalan dengan tanggal sistem tetap — 28 Sep 2026 — menghitung mundur ke 31 Des 2030. Saat 2030 mendekat, horizon eksekusi yang tersisa semakin relevan untuk keputusan riset dan alokasi modal.",
+    clockNow: "Jam sistem · 28 Sep 2026",
+    clockAdopted: "Agenda PBB diadopsi · 25 Sep 2015",
+    clockDeadline: "Tenggat · 31 Des 2030",
+    clockDays: "D-1.555",
+
+    /* 11 — KONTEKS WAKTU TAMBAHAN */
+    gannTitle: "KONTEKS WAKTU TAMBAHAN",
+    gannSub: "Lapisan siklus waktu — konteks, bukan pemicu.",
+    gannBody1: "IDX Sectors 2030 juga menyertakan modul siklus waktu 144 / 288 / 432 hari.",
+    gannBody2:
+      "Lapisan ini memberi konteks timing untuk riset. Ia bukan sistem trading berdiri sendiri. Ia bukan mesin prediksi harga. Ia tidak menghasilkan rekomendasi beli atau jual.",
+    gannDetails: [
+      { title: "Jendela siklus", body: "Zero point dideteksi otomatis dari riwayat indeks tersimpan (2026-06-08 @ 5.342,14), lalu jendela 144/288/432/576 hari dihitung. Jendela adalah konteks timing — bukan sinyal beli atau jual." },
       { title: "Posisi asing", body: "Aliran dana asing net selama 20 hari perdagangan terakhir mengonfirmasi apakah dana asing mendukung atau menelantarkan tesis." },
       { title: "Konfluensi, bukan oracle", body: "Kesimpulan muncul sebagai konfluensi bukti: skor pasar, bukti SDG, aliran asing, dan kedekatan siklus. Situs ini tidak pernah mencetak label beli/jual — by design, bukan kelalaian." },
     ],
-    transTitle: "Transparansi & batasan",
-    transSub: "Apa yang situs ini ketahui — dan apa yang jujur tidak ia ketahui.",
+
+    /* 12 — UNTUK SIAPA? */
+    whoTitle: "UNTUK SIAPA?",
+    whoSub: "Dua audiens riset, satu rantai bukti.",
+    who: [
+      { role: "Primer", title: "Peneliti Pasar & Ekuitas", body: "Peneliti yang perlu mengidentifikasi perusahaan yang mengalami perubahan bermakna dan memutuskan situasi mana yang layak diselidiki lebih dalam." },
+      { role: "Sekunder", title: "Peneliti Keberlanjutan & Dampak", body: "Peneliti yang perlu melampaui klaim korporat dan menyelidiki eksekusi bisnis yang dapat diamati terkait target SDG." },
+    ],
+
+    /* 13 — TRANSPARANSI & BATASAN */
+    transTitle: "TRANSPARANSI & BATASAN",
+    transSub: "Apa yang sistem ketahui — dan apa yang jujur tidak ia ketahui.",
     transItems: [
       { title: "Data live vs demo", body: "Badge footer menunjukkan apakah data live Sectors sudah dimuat dan berapa kredit lifetime tersisa. Tanpa API key, aplikasi menyajikan dataset demonstrasi seed." },
       { title: "Kedalaman riwayat", body: "Riwayat harga per emiten berupa jendela bergulir sekitar 90 hari; kesimpulan pendek-horizon secara konstruksi." },
@@ -1175,13 +1408,26 @@ const id: Dict = {
       { title: "Universe terkurasi", body: "Watchlist 20 nama menerima data live harian; sisanya menua dengan anggun dan ditandai chip kedaluwarsa." },
       { title: "Bukan nasihat investasi", body: "Skor mendeskripsikan bukti dan dislokasi. Semuanya adalah masukan untuk riset Anda sendiri, bukan rekomendasi." },
     ],
-    readTitle: "Cara membaca situs ini",
-    readSub: "Tiga permukaan, satu rantai bukti.",
-    readSteps: [
-      { title: "Dashboard", body: "Peringkat perusahaan berdasarkan skor market-intelligence, dengan bukti SDG dan tahap eksekusi." },
-      { title: "Halaman perusahaan", body: "Per emiten: rincian sinyal, pemetaan SDG beserta bukti, jendela timing, dan band price-floor." },
-      { title: "Gann 432", body: "Siklus level indeks: zero point terdeteksi, countdown jendela, dan konfluensi per emiten." },
+
+    /* 14 — SATU PERTANYAAN. SATU RANTAI BUKTI. */
+    flowTitle: "SATU PERTANYAAN. SATU RANTAI BUKTI.",
+    flowSub: "Dari prioritas global ke antrean riset terverifikasi dan terperingkat.",
+    flowChain: ["TENTUKAN PRIORITAS", "PILIH SDG / TARGET", "FILTER EKSEKUSI", "FILTER BUKTI", "TAMBAH KONTEKS PASAR", "PINDAI", "SINYAL TERPERINGKAT", "SELIDIKI", "VERIFIKASI"],
+    flowPages: [
+      { path: "/goals", label: "SDG Map", use: "Pilih prioritas global — definisi tujuan dan target SDG." },
+      { path: "/picker", label: "Company Picker", use: "Tentukan prioritas, filter berdasarkan relevansi SDG, tahap eksekusi dan bukti, lalu pindai." },
+      { path: "/engine", label: "Regime Engine", use: "Lihat lapisan konteks pasar lengkap di balik skor." },
+      { path: "/companies/[ticker]", label: "Halaman perusahaan", use: "Selidiki bukti, pemetaan SDG, dan band price-floor sebuah emiten." },
+      { path: "/signals/[id]", label: "Detail Sinyal", use: "Selidiki alasan satu sinyal, komponen demi komponen." },
+      { path: "/gann", label: "Gann 432", use: "Verifikasi konteks timing pada siklus level indeks." },
     ],
+
+    /* 15 — TESIS PENUTUP */
+    finalLines: ["DUNIA PUNYA RENCANA.", "PERUSAHAAN MENGEKSEKUSINYA.", "PASAR MENGUNGKAP SINYAL."],
+    finalBrand: "IDX SECTORS 2030",
+    finalChips: ["Tujuan Global.", "Eksekusi Perusahaan.", "Sinyal Pasar."],
+    finalTagline: "TEMUKAN PERUSAHAAN YANG MENGEKSEKUSI MASA DEPAN.",
+    finalDisclaimer: "Hanya intelijen riset. Bukan nasihat investasi.",
     disclaimer: "IDX Sectors 2030 adalah instrumen riset berbasis data publik. Tidak ada bagian dari situs ini yang merupakan nasihat investasi atau ajakan bertransaksi.",
   },
 
@@ -1883,39 +2129,149 @@ const zh: Dict = {
       "全球背景反映联合国对 2030 议程的监测（年度 SDG 进展报告与四年一度的《全球可持续发展报告》周期，下一版 2027 年 9 月）。这是研究优先级的背景输入——不归属于、也不推导自任何单一公司。",
   },
   about: {
-    badge: "关于",
-    titleA: "面向",
-    titleB: "2030 最后期限的执行情报",
-    sub: "IDX Sectors 2030 将印尼上市公司的 SDG 执行情况映射到市场证据——业务事件、价格错位、外资动向与周期时点。这是研究工具，而非投资建议。",
+    /* 01 — 2030 论纲 */
+    heroEyebrow: "01 — 2030 论纲",
+    heroHeadline: "世界有一张计划。",
+    heroIntro:
+      "2015 年，联合国通过了《2030 年可持续发展议程》——一个围绕 17 项可持续发展目标与 169 项具体目标构建的普世框架。",
+    heroExecution: "但全球议程只有在成为现实世界的执行时才有意义。",
+    heroExecutionList: ["项目。", "投资。", "基础设施。", "技术。", "运营。", "成果。"],
+    heroQuestion: "谁在真正执行未来？",
+    heroQuestionLead: "企业是大部分经济执行变得可观察的地方。",
+    heroQuestionSub:
+      "IDX Sectors 2030 将全球 SDG 优先事项与印尼上市公司、业务证据和 Sectors 市场数据连接起来，帮助研究者识别值得关注的对象。",
+    thesisFlow: ["全球目标", "企业执行", "市场信号", "研究优先级"],
+
+    /* 02 — 为什么 2030 重要 */
+    whyTitle: "为什么 2030 重要",
+    whySub: "SDG 不是公司标签——它是共同的世界方向。",
+    whyBody1:
+      "《2030 年议程》确立了直至 2030 年的全球实施视野。17 项可持续发展目标与 169 项具体目标为共同行动提供框架——可持续发展的共同方向。",
+    whyBody2:
+      "但目标不会自行执行。它们必须成为真实的经济活动：项目、资本配置、基础设施、技术、运营变革与可衡量的成果。",
+    financingCallout: "发展中国家每年约 4 万亿美元的 SDG 投资缺口",
     statCompanies: "家公司",
     statPrices: "条价格数据",
     statCredits: "已用点数",
-    whyTitle: "为什么 2030 重要",
-    whySub: "这个期限不是象征——它是融资与重估的倒计时。",
-    whyItems: [
-      { title: "联合国 2030 议程于 2030 年收官", body: "17 项可持续发展目标与 169 项具体目标将于 2030 年到期。发展中国家每年需要约 4 万亿美元的额外融资——私人资本与资本市场正是填补缺口的主渠道。" },
-      { title: "为什么选择 IDX 公司", body: "900 余家印尼上市公司受 OJK 规则约束进行信息披露，因此能源转型、数字化、水务与卫生等 SDG 执行可以从公开数据中审计，而不是听营销话术。" },
-      { title: "为什么是现在", body: "只剩约四年。今天的资金配置决定——哪些项目获得融资、哪些里程碑真正执行——将决定谁在 2030 重估中捕获 SDG 溢价。" },
-      { title: "为什么需要周期时点", body: "市场会提前数年折价执行情况。432 日周期框架为错位收敛的时点提供背景——连接证据与入场时机的桥梁。" },
-    ],
     refsTitle: "官方参考",
     refs: [
       { label: "Transforming our world: the 2030 Agenda for Sustainable Development", note: "定义 17 项目标与 169 项具体目标的联合国决议原文。" },
       { label: "The 17 Sustainable Development Goals", note: "官方目标页面——本站全程使用的编号与命名。" },
       { label: "UN SDG Indicators", note: "证据评分词汇背后的官方指标目录。" },
+      { label: "UNCTAD《世界投资报告》", note: "发展中国家每年约 4 万亿美元 SDG 融资缺口估算的来源。" },
     ],
-    methodTitle: "决策方法",
-    methodSub: "本站每个分数都可以从存储数据复现。没有神谕，没有黑箱。",
-    methodSteps: [
-      { title: "数据管道", body: "Sectors.app v2 到 PostgreSQL，增量且幂等：交易日探测、按来源水位线、1,000 点额度生命周期守卫。所有分数在本地从存储价格重算——0 API 点数。" },
-      { title: "市场分数（0-100）", body: "价格错位、量能异常、相对板块强弱、基本面语境与行业语境构成 100 分制分数。每行存储 methodology_version，任何数字都可跨时间审计。" },
-      { title: "SDG 执行证据", body: "业务事件映射到官方 UN SDG 目标与具体目标（DIRECT / INDIRECT / ASPIRATIONAL），并附证据分、来源层级、投资体量与管线阶段。" },
-      { title: "周期时点（Gann 432）", body: "零点从指数历史自动检测（2026-06-08 @ 5,342.14），随后计算 144/288/432/576 日窗口。窗口只是时点背景——绝不是买卖信号。" },
+
+    /* 03 — 企业是执行层 */
+    layerTitle: "企业是执行层",
+    layerSub: "全球目标定义什么重要。企业把优先事项转化为经济活动。",
+    layerBody: "这些活动可以通过公开披露变得可观察：",
+    layerList: ["业务事件", "投资", "基础设施", "合同", "技术部署", "运营变革", "可衡量的成果"],
+    layerFlow: ["全球议程", "经济活动", "企业执行", "市场反应"],
+    layerQuote1: "目标不是给公司贴上“SDG 公司”的标签。",
+    layerQuote2: "目标是识别有意义的执行正在哪里发生。",
+
+    /* 04 — 仅对齐并不够 */
+    alignTitle: "仅对齐并不够。",
+    alignLeft: "SDG 对齐",
+    alignNeq: "≠",
+    alignRight: "执行",
+    alignFormula: ["SDG 相关性", "业务证据", "执行阶段", "市场语境", "时点", "研究优先级"],
+    alignBody1: "仅凭提及 SDG 并不足够。",
+    alignBody2: "IDX Sectors 2030 的设计是从主题对齐走向有证据支撑的执行。",
+
+    /* 05 — 我们试图回答的问题 */
+    questionTitle: "我们试图回答的问题",
+    questionBig:
+      "哪些公司正在真正执行与 2030 议程相关的活动——哪些值得现在就投入研究关注？",
+    questionBody: "研究者也许不需要再一个仪表盘。",
+    questionBody2: "他们需要知道先看哪里。",
+
+    /* 06 — 从全球目标到市场信号 */
+    chainTitle: "从全球目标到市场信号",
+    chainSub: "一条证据链，从全球优先级到研究优先级。",
+    chainFlow: ["联合国 2030 议程", "17 项 SDG", "169 项具体目标", "业务事件", "企业执行", "SECTORS 市场数据", "派生信号", "研究优先级"],
+    chainQa: [
+      { k: "SDG", q: "什么在全球层面重要？" },
+      { k: "公司证据", q: "谁在真正执行？" },
+      { k: "Sectors 市场数据", q: "市场如何表现？" },
+      { k: "时点", q: "为什么现在值得研究关注？" },
+      { k: "派生信号", q: "研究者应该先看哪里？" },
+    ],
+
+    /* 07 — 情报如何派生 */
+    methodTitle: "情报如何派生",
+    methodSub: "每个分数都可从存储数据复现。没有神谕，没有黑箱。",
+    methodSplit: [
+      { pct: "70%", label: "Sectors 派生市场层" },
+      { pct: "20%", label: "业务事件证据" },
+      { pct: "10%", label: "SDG / 2030 维度" },
+    ],
+    methodNote: "这是 IDX Sectors 2030 的产品方法论，不是 Sectors 官方公式。",
+    methodLayers: [
+      { title: "市场层", items: ["价格错位", "量能异常", "相对板块强弱", "基本面语境", "市场 / 行业语境"] },
+      { title: "证据层", items: ["业务事件", "来源质量", "事件体量", "执行阶段"] },
+      { title: "SDG / 2030 层", items: ["SDG 目标相关性", "执行时点"] },
+    ],
+    methodPipeline: {
+      title: "数据管道与可复现性",
+      body: "Sectors.app v2 → PostgreSQL，增量且幂等：交易日探测、按来源水位线、1,000 点额度生命周期守卫。分数在本地从存储价格重算——0 API 点数——每行存储 methodology_version，任何数字都可跨时间审计。",
+    },
+
+    /* 08 — 为什么 Sectors 是核心 */
+    sectorsTitle: "为什么 Sectors 是核心",
+    sectorsSub: "Sectors 市场数据层是核心情报引擎的一部分——不是装饰。",
+    sectorsBody1: "SDG 告诉我们什么在全球层面重要。",
+    sectorsBody2: "公司证据告诉我们谁在执行。",
+    sectorsBody3: "Sectors 告诉我们市场在这类执行周围如何表现。",
+    sectorsBody4: "IDX Sectors 2030 把这三层连接起来。",
+    sectorsFormula: [
+      { k: "SDG", q: "什么在全球层面重要？" },
+      { k: "公司证据", q: "谁在执行？" },
+      { k: "SECTORS", q: "市场如何反应？" },
+    ],
+    sectorsResult: "市场情报",
+
+    /* 09 — 信号不只是分数 */
+    signalTitle: "信号不只是分数",
+    signalSub: "每个信号都自带理由，逐组件呈现。",
+    signalQuestions: ["为什么是这家公司？", "为什么是这个事件？", "为什么是这个 SDG 目标？", "为什么是这个市场语境？", "为什么是现在？"],
+    signalFormula: ["信号强度", "SDG 证据", "市场语境", "时点", "执行阶段", "证据"],
+    signalBody:
+      "信号详情让研究者逐组件调查信号背后的理由：每个组件都存储其指标、基准、权重、贡献与通俗解释。",
+
+    /* 10 — 2030 执行时钟 */
+    clockTitle: "2030 执行时钟",
+    clockSub: "固定系统时钟让每个数字在同一页面上。",
+    clockBody:
+      "产品运行在固定系统日期——2026 年 9 月 28 日——并向 2030 年 12 月 31 日倒计时。随着 2030 临近，剩余执行期对研究与资本配置决策越来越相关。",
+    clockNow: "系统时钟 · 2026年9月28日",
+    clockAdopted: "联合国议程通过 · 2015年9月25日",
+    clockDeadline: "期限 · 2030年12月31日",
+    clockDays: "D-1,555",
+
+    /* 11 — 附加时间语境 */
+    gannTitle: "附加时间语境",
+    gannSub: "时间周期叠加层——只是语境，绝不是触发器。",
+    gannBody1: "IDX Sectors 2030 还包含 144 / 288 / 432 日时间周期模块。",
+    gannBody2:
+      "该层为研究提供时点语境。它不是独立的交易系统，不是价格预测引擎，也不生成买卖建议。",
+    gannDetails: [
+      { title: "周期窗口", body: "零点从指数历史自动检测（2026-06-08 @ 5,342.14），随后计算 144/288/432/576 日窗口。窗口只是时点背景——绝不是买卖信号。" },
       { title: "外资动向", body: "近 20 个交易日的净外资流入之和，用于确认外资是在支持还是背离该论点。" },
       { title: "共振，而非神谕", body: "结论以证据共振的形式呈现：市场分数、SDG 证据、外资流向与周期临近度。本站从不输出买卖标签——这是刻意设计，不是疏漏。" },
     ],
+
+    /* 12 — 这是给谁的？ */
+    whoTitle: "这是给谁的？",
+    whoSub: "两类研究受众，一条证据链。",
+    who: [
+      { role: "主要", title: "市场与股票研究者", body: "需要识别正在发生有意义变化的公司，并判断哪些情形值得深入调查的研究者。" },
+      { role: "次要", title: "可持续与影响力研究者", body: "需要超越企业宣称、调查与 SDG 目标相关的可观察业务执行的研究者。" },
+    ],
+
+    /* 13 — 透明度与局限 */
     transTitle: "透明度与局限",
-    transSub: "本站知道什么，以及它诚实承认不知道什么。",
+    transSub: "系统知道什么——以及它诚实承认不知道什么。",
     transItems: [
       { title: "实时与演示数据", body: "页脚徽标显示是否已加载 Sectors 实时数据以及剩余额度。没有 API key 时，应用提供种子演示数据集。" },
       { title: "历史深度", body: "每只股票的价格历史为滚动约 90 天窗口；结论在构造上就是短周期的。" },
@@ -1923,13 +2279,26 @@ const zh: Dict = {
       { title: "策展宇宙", body: "每日仅 20 只观察名单获得实时数据；其余公司优雅老化，并标注陈旧天数。" },
       { title: "非投资建议", body: "分数描述证据与错位。它们是你自己研究的输入，不是建议。" },
     ],
-    readTitle: "如何使用本站",
-    readSub: "三个界面，一条证据链。",
-    readSteps: [
-      { title: "仪表盘", body: "按市场情报分数排名的公司列表，附 SDG 证据与执行阶段。" },
-      { title: "公司页", body: "单只股票：信号拆解、SDG 映射证据、时点窗口与价格地板区间。" },
-      { title: "Gann 432", body: "指数级周期：检测到的零点、窗口倒计时与逐股共振。" },
+
+    /* 14 — 一个问题。一条证据链。 */
+    flowTitle: "一个问题。一条证据链。",
+    flowSub: "从全球优先级到经验证、已排序的研究队列。",
+    flowChain: ["定义优先级", "选择 SDG / 目标", "过滤执行", "过滤证据", "加入市场语境", "扫描", "已排序信号", "调查", "验证"],
+    flowPages: [
+      { path: "/goals", label: "SDG 地图", use: "选择全球优先级——SDG 目标与具体目标定义。" },
+      { path: "/picker", label: "公司筛选器", use: "定义优先级，按 SDG 相关性、执行阶段与证据过滤，然后扫描。" },
+      { path: "/engine", label: "体制引擎", use: "查看分数背后的完整市场语境层。" },
+      { path: "/companies/[ticker]", label: "公司页", use: "调查一家公司的证据、SDG 映射与价格地板区间。" },
+      { path: "/signals/[id]", label: "信号详情", use: "逐组件调查一个信号的理由。" },
+      { path: "/gann", label: "Gann 432", use: "在指数级周期上验证时点语境。" },
     ],
+
+    /* 15 — 结题论纲 */
+    finalLines: ["世界有一张计划。", "企业执行它。", "市场揭示信号。"],
+    finalBrand: "IDX SECTORS 2030",
+    finalChips: ["全球目标。", "企业执行。", "市场信号。"],
+    finalTagline: "找到正在执行未来的公司。",
+    finalDisclaimer: "仅供研究情报使用。不构成投资建议。",
     disclaimer: "IDX Sectors 2030 是基于公开数据的研究工具。本站内容不构成投资建议或交易邀约。",
   },
 
