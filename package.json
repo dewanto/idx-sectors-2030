@@ -11,9 +11,11 @@
     "db:seed": "tsx src/db/seed.ts",
     "db:sync": "tsx src/db/sync.ts",
     "db:smoke": "tsx src/db/smoke-sectors.ts",
-    "db:smoke:gann": "tsx src/db/smoke-gann.ts"
+    "db:smoke:gann": "tsx src/db/smoke-gann.ts",
+    "test": "playwright test --config playwright-dyad.config.ts"
   },
   "dependencies": {
+    "@playwright/test": "^1.63.0",
     "dotenv": "17.3.1",
     "drizzle-orm": "0.45.2",
     "framer-motion": "^13.4.4",
