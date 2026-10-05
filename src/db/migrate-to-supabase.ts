@@ -1,7 +1,10 @@
 /**
  * One-off migration: local Postgres → Supabase (schema + data).
  *
- *   npm run db:migrate:supabase [-- --force]
+ * Two ways to run the same guarded, idempotent migration:
+ *
+ *   1. CLI:     npm run db:migrate:supabase [-- --force]
+ *   2. One-click (dev server): GET /api/admin/migrate?token=<MIGRATE_TOKEN>
  *
  * Source : MIGRATE_SOURCE_URL ?? DATABASE_URL      (the DB your local app reads)
  * Target : SUPABASE_DATABASE_URL ?? DIRECT_URL ?? SUPABASE_DIRECT_URL
@@ -16,8 +19,7 @@
  *  4. Truncates the target's app tables, then copies every table in FK order
  *     with explicit ids and resets each id sequence — reruns are clean and
  *     deterministic.
- *  5. Prints per-table source vs target row counts and exits non-zero on any
- *     mismatch.
+ *  5. Reports per-table source vs target row counts.
  *
  * The Sectors API is never called and no credits are spent. `sync_state` rows
  * are copied so the app keeps its "Live · Sectors API" badge and the
@@ -29,28 +31,6 @@ import { Pool } from "pg";
 const pick = (...vals: (string | undefined)[]): string =>
   vals.find((v) => v && v.trim()) ?? "";
 
-const FORCE = process.argv.includes("--force");
-
-const sourceUrl = pick(process.env.MIGRATE_SOURCE_URL, process.env.DATABASE_URL);
-const targetUrl = pick(
-  process.env.SUPABASE_DATABASE_URL,
-  process.env.DIRECT_URL,
-  process.env.SUPABASE_DIRECT_URL,
-);
-
-if (!sourceUrl) {
-  console.error("No source database URL. Set DATABASE_URL (or MIGRATE_SOURCE_URL) in .env.");
-  process.exit(1);
-}
-if (!targetUrl) {
-  console.error(
-    "No target database URL. Set SUPABASE_DATABASE_URL (pooled, port 6543) or " +
-      "DIRECT_URL (direct, port 5432) in .env.",
-  );
-  process.exit(1);
-}
-
-/** FK-dependency order — parents before children. */
 const TABLES = [
   "sdg_goals",
   "sdg_targets",
@@ -441,81 +421,135 @@ async function copyTable(
   return { source: rows.length, target };
 }
 
-async function main(): Promise<void> {
-  console.log(`Source : ${mask(sourceUrl)}`);
-  console.log(`Target : ${mask(targetUrl)}`);
+export interface MigrationRow {
+  table: string;
+  source: number;
+  target: number;
+  ok: boolean;
+}
+
+export interface MigrationReport {
+  sourceLabel: string;
+  targetLabel: string;
+  companyCount: number;
+  mismatches: number;
+  rows: MigrationRow[];
+}
+
+/** Runs the full guarded migration and returns a per-table report. Throws on guard failures. */
+export async function runMigration(
+  log: (m: string) => void = console.log,
+): Promise<MigrationReport> {
+  const sourceUrl = pick(process.env.MIGRATE_SOURCE_URL, process.env.DATABASE_URL);
+  const targetUrl = pick(
+    process.env.SUPABASE_DATABASE_URL,
+    process.env.DIRECT_URL,
+    process.env.SUPABASE_DIRECT_URL,
+  );
+  const FORCE = process.argv.includes("--force");
+
+  if (!sourceUrl) {
+    throw new Error("No source database URL. Set DATABASE_URL (or MIGRATE_SOURCE_URL) in .env.");
+  }
+  if (!targetUrl) {
+    throw new Error(
+      "No target database URL. Set SUPABASE_DATABASE_URL (pooled, port 6543) or " +
+        "DIRECT_URL (direct, port 5432) in .env.",
+    );
+  }
+
+  log(`Source : ${mask(sourceUrl)}`);
+  log(`Target : ${mask(targetUrl)}`);
 
   const src = poolFor(sourceUrl, 2);
   const dst = poolFor(targetUrl, 4);
 
-  const srcId = await identity(src);
-  const dstId = await identity(dst);
-  if (sourceUrl === targetUrl || srcId === dstId) {
-    console.error(`Refusing to run: source and target are the same database (${srcId}).`);
-    process.exit(1);
-  }
+  try {
+    const srcId = await identity(src);
+    const dstId = await identity(dst);
+    if (sourceUrl === targetUrl || srcId === dstId) {
+      throw new Error(`Refusing to run: source and target are the same database (${srcId}).`);
+    }
 
-  console.log("Ensuring schema on target…");
-  for (const stmt of [...DDL, ...INDEXES, RLS_GRANTS]) {
-    await dst.query(stmt);
-  }
+    log("Ensuring schema on target…");
+    for (const stmt of [...DDL, ...INDEXES, RLS_GRANTS]) {
+      await dst.query(stmt);
+    }
 
-  const hasApp = (
-    await src.query(
-      `select count(*)::int as n from information_schema.tables
-       where table_schema = 'public' and table_name = 'companies'`,
-    )
-  ).rows[0].n;
-  if (!hasApp) {
-    console.error(
-      "Source has no `companies` table — DATABASE_URL does not point at the app database.",
+    const hasApp = (
+      await src.query(
+        `select count(*)::int as n from information_schema.tables
+         where table_schema = 'public' and table_name = 'companies'`,
+      )
+    ).rows[0].n;
+    if (!hasApp) {
+      throw new Error(
+        "Source has no `companies` table — the source URL does not point at the app database. " +
+          "If your data lives elsewhere, set MIGRATE_SOURCE_URL in .env and retry.",
+      );
+    }
+    const companyCount = (await src.query("select count(*)::int as n from public.companies"))
+      .rows[0].n;
+    if (companyCount === 0 && !FORCE) {
+      throw new Error(
+        "Source has 0 companies rows. If your data lives in another database, set " +
+          "MIGRATE_SOURCE_URL=postgresql://… in .env and retry (or run the CLI with --force).",
+      );
+    }
+
+    log("Truncating target app tables…");
+    await dst.query(
+      `TRUNCATE TABLE ${TABLES.map((t) => `public.${t}`).join(", ")} RESTART IDENTITY CASCADE`,
     );
-    process.exit(1);
+
+    log("Copying data…");
+    const pad = Math.max(...TABLES.map((t) => t.length));
+    const rows: MigrationRow[] = [];
+    let mismatches = 0;
+    for (const table of TABLES) {
+      const { source, target } = await copyTable(src, dst, table);
+      const ok = source === target;
+      if (!ok) mismatches += 1;
+      rows.push({ table, source, target, ok });
+      log(
+        `  ${table.padEnd(pad)}  src ${String(source).padStart(5)}  →  dst ${String(target).padStart(5)}  ${ok ? "✔" : "✗ MISMATCH"}`,
+      );
+    }
+
+    return {
+      sourceLabel: mask(sourceUrl),
+      targetLabel: mask(targetUrl),
+      companyCount,
+      mismatches,
+      rows,
+    };
+  } finally {
+    await src.end().catch(() => undefined);
+    await dst.end().catch(() => undefined);
   }
-  const companyCount = (await src.query("select count(*)::int as n from public.companies")).rows[0]
-    .n;
-  if (companyCount === 0 && !FORCE) {
-    console.error(
-      "Source has 0 companies rows. If your data lives in another database, set\n" +
-        "  MIGRATE_SOURCE_URL=postgresql://…\n" +
-        "in .env and rerun (or use --force to migrate an empty schema).",
-    );
-    process.exit(1);
-  }
-
-  console.log("Truncating target app tables…");
-  await dst.query(
-    `TRUNCATE TABLE ${TABLES.map((t) => `public.${t}`).join(", ")} RESTART IDENTITY CASCADE`,
-  );
-
-  console.log("Copying data…");
-  const pad = Math.max(...TABLES.map((t) => t.length));
-  let mismatches = 0;
-  for (const table of TABLES) {
-    const { source, target } = await copyTable(src, dst, table);
-    const ok = source === target;
-    if (!ok) mismatches += 1;
-    console.log(
-      `  ${table.padEnd(pad)}  src ${String(source).padStart(5)}  →  dst ${String(target).padStart(5)}  ${ok ? "✔" : "✗ MISMATCH"}`,
-    );
-  }
-
-  await src.end().catch(() => undefined);
-  await dst.end().catch(() => undefined);
-
-  if (mismatches > 0) {
-    console.error(`${mismatches} table(s) mismatched — rerun the script (it is idempotent).`);
-    process.exit(2);
-  }
-
-  console.log(
-    companyCount > 0
-      ? `Migration complete ✔ (${companyCount} companies).`
-      : "Migration complete ✔ (empty dataset — schema only).",
-  );
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+/* CLI entry point — skipped when this module is imported by the app. */
+function isDirectRun(): boolean {
+  const arg1 = process.argv[1];
+  return !!arg1 && arg1.replace(/\\/g, "/").endsWith("db/migrate-to-supabase.ts");
+}
+
+if (isDirectRun()) {
+  runMigration(console.log)
+    .then((report) => {
+      if (report.mismatches > 0) {
+        console.error(`${report.mismatches} table(s) mismatched — rerun the script (it is idempotent).`);
+        process.exit(2);
+      }
+      console.log(
+        report.companyCount > 0
+          ? `Migration complete ✔ (${report.companyCount} companies).`
+          : "Migration complete ✔ (empty dataset — schema only).",
+      );
+    })
+    .catch((err) => {
+      console.error(err instanceof Error ? err.message : err);
+      process.exit(1);
+    });
+}
