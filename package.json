@@ -10,6 +10,7 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
     "db:sync": "tsx src/db/sync.ts",
+    "db:migrate:supabase": "tsx src/db/migrate-to-supabase.ts",
     "db:smoke": "tsx src/db/smoke-sectors.ts",
     "db:smoke:gann": "tsx src/db/smoke-gann.ts",
     "test": "playwright test --config playwright-dyad.config.ts"
