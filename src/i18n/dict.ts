@@ -12,7 +12,7 @@ const en = {
   meta: {
     title: "IDX Sectors 2030 — Sectors Market Intelligence",
     description:
-      "Evidence-backed SDG execution intelligence for Indonesian listed companies. Business events, UN SDG targets, execution stages, 2030 timing, and Sectors market validation.",
+      "Evidence-backed 2030 execution intelligence for Indonesian listed companies, connecting UN SDG priorities, company execution, business evidence and Sectors market data into derived research signals.",
   },
   common: {
     signalStrength: "Signal strength",
@@ -70,16 +70,26 @@ const en = {
     systemClock: "System clock",
     adopted: "UN agenda adopted",
     deadline: "Deadline",
-    titleA: "WHAT CHANGED",
-    titleB: "BEFORE",
-    titleC: "2030?",
+    eyebrow: "THE 2030 THESIS",
+    line1: "THE WORLD HAS A PLAN.",
+    line2: "COMPANIES EXECUTE IT.",
+    line3: "MARKETS REVEAL SIGNALS.",
     subtitle:
-      "Evidence-backed intelligence that finds Indonesian listed companies with documented business activity mapped to UN SDG targets — classified by execution stage, scored against the 2030 horizon, and validated with Sectors market data.",
-    tags: ["Business events", "SDG targets", "Execution stage", "2030 timing", "Market validation", "Signal"],
+      "The UN 2030 Agenda defines 17 Sustainable Development Goals and 169 targets as a shared global framework. IDX Sectors 2030 connects those global priorities with Indonesian listed-company execution, business evidence and Sectors market data to identify derived signals worth researching.",
+    support:
+      "Global goals define the priority. Companies make execution observable. Sectors provides the market context.",
+    question: "WHO IS ACTUALLY EXECUTING THE FUTURE?",
+    bridge: ["GLOBAL GOALS", "COMPANY EXECUTION", "MARKET SIGNALS", "RESEARCH PRIORITY"],
+    tags: ["Global goals", "Company execution", "Business evidence", "Sectors market data", "2030 timing", "Derived signal"],
+    horizonLabel: "2030 EXECUTION HORIZON",
     clockRemaining: "Execution clock · time remaining",
     approxTpl: "≈ {m} months · {y} years",
+    clockCopy:
+      "2030 is the execution horizon. Global goals become meaningful when they become projects, investment, infrastructure, technology, operations and measurable outcomes.",
+    clockContext:
+      "The clock provides the time context for where documented company execution sits on the road to 2030.",
     adoptedRail: "ADOPTED · 2015",
-    nowRail: "NOW · 2026",
+    nowRail: "NOW",
     gsdr: "GSDR · Sep 2027",
     windows: [
       "Discovery / intent / preparation",
@@ -895,7 +905,7 @@ const id: Dict = {
   meta: {
     title: "IDX Sectors 2030 — Intelijen Pasar Sectors",
     description:
-      "Intelijen eksekusi SDG berbasis bukti untuk perusahaan tercatat Indonesia. Peristiwa bisnis, target SDG PBB, tahap eksekusi, waktu 2030, dan validasi pasar Sectors.",
+      "Intelijen eksekusi 2030 berbasis bukti untuk perusahaan tercatat Indonesia — menghubungkan prioritas SDG PBB, eksekusi perusahaan, bukti bisnis, dan data pasar Sectors menjadi derived signal riset.",
   },
   common: {
     signalStrength: "Kekuatan sinyal",
@@ -953,16 +963,26 @@ const id: Dict = {
     systemClock: "Jam sistem",
     adopted: "Agenda PBB diadopsi",
     deadline: "Tenggat",
-    titleA: "APA YANG BERUBAH",
-    titleB: "SEBELUM",
-    titleC: "2030?",
+    eyebrow: "THESIS 2030",
+    line1: "DUNIA TELAH MEMILIKI SEBUAH RENCANA.",
+    line2: "PERUSAHAAN MENJALANKAN EKSEKUSINYA.",
+    line3: "PASAR MENUNJUKKAN SIGNAL.",
     subtitle:
-      "Intelijen berbasis bukti yang menemukan perusahaan tercatat Indonesia dengan aktivitas bisnis terdokumentasi yang terpetakan ke target SDG PBB — diklasifikasikan menurut tahap eksekusi, diskor terhadap horizon 2030, dan divalidasi dengan data pasar Sectors.",
-    tags: ["Peristiwa bisnis", "Target SDG", "Tahap eksekusi", "Waktu 2030", "Validasi pasar", "Sinyal"],
+      "Agenda PBB 2030 menetapkan 17 Sustainable Development Goals dan 169 target sebagai kerangka global bersama. IDX Sectors 2030 menghubungkan prioritas global tersebut dengan eksekusi perusahaan tercatat di Indonesia, evidence bisnis, dan data pasar Sectors untuk menghasilkan derived signal yang layak diteliti.",
+    support:
+      "Global goals menentukan prioritas. Perusahaan membuat eksekusi terlihat. Sectors memberikan konteks pasar.",
+    question: "SIAPA YANG BENAR-BENAR MENJALANKAN MASA DEPAN?",
+    bridge: ["GLOBAL GOALS", "EKSEKUSI PERUSAHAAN", "MARKET SIGNAL", "PRIORITAS RISET"],
+    tags: ["Global goals", "Eksekusi perusahaan", "Bukti bisnis", "Data pasar Sectors", "Timing 2030", "Derived signal"],
+    horizonLabel: "HORIZON EKSEKUSI 2030",
     clockRemaining: "Jam eksekusi · waktu tersisa",
     approxTpl: "≈ {m} bulan · {y} tahun",
+    clockCopy:
+      "2030 adalah horizon eksekusi. Tujuan global baru menjadi bermakna ketika menjadi proyek, investasi, infrastruktur, teknologi, operasi, dan hasil yang terukur.",
+    clockContext:
+      "Jam ini memberikan konteks waktu untuk posisi eksekusi perusahaan yang terdokumentasi di jalan menuju 2030.",
     adoptedRail: "DIADOPSI · 2015",
-    nowRail: "KINI · 2026",
+    nowRail: "KINI",
     gsdr: "GSDR · Sep 2027",
     windows: [
       "Penemuan / niat / persiapan",
@@ -1776,7 +1796,7 @@ const zh: Dict = {
   meta: {
     title: "IDX Sectors 2030 — Sectors 市场情报",
     description:
-      "面向印尼上市公司的循证 SDG 执行情报：商业事件、联合国 SDG 目标、执行阶段、2030 时间窗口与 Sectors 市场验证。",
+      "面向印尼上市公司的循证 2030 执行情报：连接联合国 SDG 优先事项、企业执行、业务证据与 Sectors 市场数据，形成值得研究的派生研究信号。",
   },
   common: {
     signalStrength: "信号强度",
@@ -1834,16 +1854,24 @@ const zh: Dict = {
     systemClock: "系统时钟",
     adopted: "联合国议程通过",
     deadline: "截止期限",
-    titleA: "2030 之前",
-    titleB: "什么正在改变",
-    titleC: "？",
+    eyebrow: "2030 论纲",
+    line1: "世界已有计划。",
+    line2: "企业执行它。",
+    line3: "市场揭示信号。",
     subtitle:
-      "循证情报系统，发现已被记录的、映射至联合国 SDG 目标的印尼上市公司商业活动——按执行阶段分类、对照 2030 时间轴打分，并以 Sectors 市场数据验证。",
-    tags: ["商业事件", "SDG 目标", "执行阶段", "2030 时机", "市场验证", "信号"],
+      "联合国 2030 议程确立了 17 项可持续发展目标与 169 项具体目标这一共同全球框架。IDX Sectors 2030 将这些全球优先事项与印尼上市公司的执行、业务证据和 Sectors 市场数据连接起来，识别值得研究的派生信号。",
+    support: "全球目标定义优先级。企业让执行可观察。Sectors 提供市场语境。",
+    question: "谁在真正执行未来？",
+    bridge: ["全球目标", "企业执行", "市场信号", "研究优先级"],
+    tags: ["全球目标", "企业执行", "业务证据", "Sectors 市场数据", "2030 时机", "派生信号"],
+    horizonLabel: "2030 执行视野",
     clockRemaining: "执行时钟 · 剩余时间",
     approxTpl: "≈ {m} 个月 · {y} 年",
+    clockCopy:
+      "2030 是执行视野。全球目标只有转化为项目、投资、基础设施、技术、运营和可衡量的成果，才具有现实意义。",
+    clockContext: "该时钟为已记录的企业执行在通往 2030 的道路上所处的位置提供时间语境。",
     adoptedRail: "通过 · 2015",
-    nowRail: "现在 · 2026",
+    nowRail: "现在",
     gsdr: "GSDR · 2027年9月",
     windows: [
       "发现 / 意向 / 筹备",

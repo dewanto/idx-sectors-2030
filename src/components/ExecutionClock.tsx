@@ -1,53 +1,141 @@
-import { EXECUTION_WINDOWS, MONTHS_TO_2030, YEARS_TO_2030 } from "@/lib/system";
+import { Fragment } from "react";
+import { AGENDA_ADOPTED, DEADLINE_2030, EXECUTION_WINDOWS, parseDate } from "@/lib/system";
 import { Milestone, Radar, Flag } from "lucide-react";
 import LiveCountdown from "./LiveCountdown";
-import { tpl, type Dict } from "@/i18n/dict";
+import { tpl, type Dict, type Locale } from "@/i18n/dict";
 
-const ADOPT = "25 Sep 2015";
-const NOW = "28 Sep 2026";
-const DEADLINE = "31 Dec 2030";
+/* GSDR checkpoint (Sep 2027) — reference marker on the rail */
+const GSDR_DATE = new Date("2027-09-30T00:00:00Z");
+const RAIL_SPAN = DEADLINE_2030.getTime() - AGENDA_ADOPTED.getTime();
+const railPct = (d: Date) =>
+  Math.min(100, Math.max(0, ((d.getTime() - AGENDA_ADOPTED.getTime()) / RAIL_SPAN) * 100));
 
-/* position on 2015-09-25 → 2030-12-31 rail */
-const P_NOW = 75.6; // 28 Sep 2026
-const P_GSDR = 78.2; // Sep 2027 GSDR checkpoint
+const LOCALE_TAG: Record<Locale, string> = { en: "en-GB", id: "id-ID", zh: "zh-CN" };
 
-export default function ExecutionClock({ t: d }: { t: Dict }) {
+export default function ExecutionClock({ t: d, locale }: { t: Dict; locale: Locale }) {
   const t = d.hero;
+
+  /* live application date — rendered per request (force-dynamic) */
+  const now = new Date();
+  const pNow = railPct(now);
+  const pGsdr = railPct(GSDR_DATE);
+  const nowLabel = now.toLocaleDateString(LOCALE_TAG[locale], {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  /* remaining runway, consistent with the live countdown */
+  const daysLeft = Math.max(0, Math.round((DEADLINE_2030.getTime() - now.getTime()) / 86_400_000));
+  const monthsLeft = +(daysLeft / 30.44).toFixed(1);
+  const yearsLeft = +(daysLeft / 365.25).toFixed(2);
+
   return (
     <section className="dotgrid relative overflow-hidden border-b border-[color:var(--line)]">
       <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-12 md:px-8 md:pb-14 md:pt-16">
-        {/* intro line */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
+        {/* status chips */}
+        <div className="rise-in mb-8 flex flex-wrap items-center gap-3" style={{ animationDelay: "0.72s" }}>
           <span className="chip">
             <Radar size={11} className="text-[color:var(--accent)]" />
-            {t.systemClock} · {NOW}
+            {t.systemClock} · {nowLabel}
           </span>
-          <span className="chip">{t.adopted} · {ADOPT}</span>
+          <span className="chip">{t.adopted} · 25 Sep 2015</span>
           <span className="chip !border-[rgba(242,92,92,0.4)] !text-[#F25C5C]">
             <Flag size={11} />
-            {t.deadline} · {DEADLINE}
+            {t.deadline} · 31 Dec 2030
           </span>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-10">
+          {/* ── left — the thesis ─────────────────────────────── */}
           <div>
-            <h1 className="text-[13vw] font-semibold leading-[0.94] tracking-[-0.03em] sm:text-[64px] lg:text-[76px] xl:text-[86px]">
-              {t.titleA}
-              <br />
-              {t.titleB && <span className="text-[color:var(--muted)]">{t.titleB} </span>}
-              <span className="relative inline-block text-[color:var(--accent)]">
-                {t.titleC}
-                <span className="absolute -bottom-2 left-0 h-[3px] w-full bg-[color:var(--accent)]" />
+            <p
+              className="rise-in label text-[9px] tracking-[0.24em] text-[color:var(--accent)]"
+              style={{ animationDelay: "0.05s" }}
+            >
+              {t.eyebrow}
+            </p>
+            <h1 className="mt-4 font-semibold tracking-[-0.03em]">
+              <span
+                className="rise-in block text-[11.5vw] leading-[0.94] sm:text-[58px] lg:text-[66px] xl:text-[76px]"
+                style={{ animationDelay: "0.12s" }}
+              >
+                {t.line1}
+              </span>
+              <span
+                className="rise-in mt-3 block text-[8vw] leading-[1.02] tracking-[-0.02em] text-[color:var(--ink-dim)] sm:text-[36px] lg:text-[40px] xl:text-[46px]"
+                style={{ animationDelay: "0.22s" }}
+              >
+                {t.line2}
+              </span>
+              <span
+                className="rise-in mt-2 block text-[8vw] leading-[1.02] tracking-[-0.02em] text-[color:var(--accent)] sm:text-[36px] lg:text-[40px] xl:text-[46px]"
+                style={{ animationDelay: "0.3s" }}
+              >
+                {t.line3}
               </span>
             </h1>
-            <p className="mt-6 max-w-[560px] text-[15px] leading-relaxed text-[color:var(--ink-dim)]">
+            <p className="rise-in mt-6 max-w-[600px] text-[15px] leading-relaxed text-[color:var(--ink-dim)]" style={{ animationDelay: "0.38s" }}>
               {t.subtitle}
             </p>
-            <div className="mt-6 flex flex-wrap gap-2 font-data text-[10px] uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            <p
+              className="rise-in mt-3 max-w-[600px] font-data text-[10.5px] leading-relaxed tracking-[0.02em] text-[color:var(--muted)]"
+              style={{ animationDelay: "0.42s" }}
+            >
+              {t.support}
+            </p>
+
+            {/* thesis question */}
+            <div
+              className="rise-in mt-8 max-w-[640px] border border-[color:var(--line-strong)] bg-[color:var(--surface)] px-5 py-4"
+              style={{ animationDelay: "0.5s" }}
+            >
+              <p className="font-data text-[14px] font-semibold uppercase leading-snug tracking-[0.08em] text-[color:var(--ink)] md:text-[16px]">
+                {t.question}
+              </p>
+            </div>
+
+            {/* bridge — global plan → execution → market → priority */}
+            <div
+              className="rise-in mt-6 flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2.5 sm:gap-y-2"
+              style={{ animationDelay: "0.58s" }}
+            >
+              {t.bridge.map((step, i) => (
+                <Fragment key={step}>
+                  {i > 0 && (
+                    <span
+                      aria-hidden
+                      className="rotate-90 self-center pl-1 font-data text-[12px] leading-none text-[color:var(--accent)] sm:rotate-0 sm:pl-0"
+                    >
+                      →
+                    </span>
+                  )}
+                  <span
+                    className={`whitespace-nowrap border px-2.5 py-1.5 font-data text-[10px] uppercase tracking-[0.12em] ${
+                      i === t.bridge.length - 1
+                        ? "border-[color:var(--accent)] text-[color:var(--accent)]"
+                        : "border-[color:var(--line)] text-[color:var(--ink)]"
+                    }`}
+                  >
+                    {step}
+                  </span>
+                </Fragment>
+              ))}
+            </div>
+
+            {/* strategic tags */}
+            <div
+              className="rise-in mt-6 flex flex-wrap gap-2 font-data text-[10px] uppercase tracking-[0.14em] text-[color:var(--muted)]"
+              style={{ animationDelay: "0.66s" }}
+            >
               {t.tags.map((tag, i) => (
                 <span
                   key={tag}
-                  className={`border px-2 py-1 ${i === t.tags.length - 1 ? "border-[color:var(--accent)] text-[color:var(--accent)]" : "border-[color:var(--line)]"}`}
+                  className={`border px-2 py-1 ${
+                    i === t.tags.length - 1
+                      ? "border-[color:var(--accent)] text-[color:var(--accent)]"
+                      : "border-[color:var(--line)]"
+                  }`}
                 >
                   {tag}
                 </span>
@@ -55,11 +143,13 @@ export default function ExecutionClock({ t: d }: { t: Dict }) {
             </div>
           </div>
 
-          <div>
+          {/* ── right — the execution clock ───────────────────── */}
+          <div className="rise-in" style={{ animationDelay: "0.4s" }}>
+            <p className="label mb-2 text-[9px] tracking-[0.22em] text-[color:var(--accent)]">{t.horizonLabel}</p>
             <div className="mb-2 flex items-center justify-between">
               <span className="label text-[9px]">{t.clockRemaining}</span>
               <span className="font-data text-[10px] text-[color:var(--muted)]">
-                {tpl(t.approxTpl, { m: MONTHS_TO_2030, y: YEARS_TO_2030 })}
+                {tpl(t.approxTpl, { m: monthsLeft, y: yearsLeft })}
               </span>
             </div>
             <div className="border border-[color:var(--line-strong)]">
@@ -73,17 +163,17 @@ export default function ExecutionClock({ t: d }: { t: Dict }) {
                 {/* elapsed */}
                 <div
                   className="absolute left-0 top-[27px] h-[3px] -translate-y-[1px] bg-[color:var(--accent)]"
-                  style={{ width: `${P_NOW}%` }}
+                  style={{ width: `${pNow}%` }}
                 />
                 {/* GSDR checkpoint */}
-                <div className="absolute top-[22px]" style={{ left: `${P_GSDR}%` }}>
+                <div className="absolute top-[22px]" style={{ left: `${pGsdr}%` }}>
                   <div className="h-[10px] w-px bg-[color:var(--blue)]" />
-                  <div className="label mt-1 -translate-x-1/2 whitespace-nowrap text-[7.5px] !text-[color:var(--blue)]">
+                  <div className="label mt-1 -translate-x-1/2 whitespace-nowrap text-[7.5px] !text-[color:var(--blue)] max-md:hidden">
                     {t.gsdr}
                   </div>
                 </div>
                 {/* now */}
-                <div className="absolute top-[19px]" style={{ left: `${P_NOW}%` }}>
+                <div className="absolute top-[19px]" style={{ left: `${pNow}%` }}>
                   <div className="pulse-dot h-[9px] w-[9px] -translate-x-1/2 rounded-full bg-[color:var(--accent)]" />
                   <div className="label -translate-x-1/2 whitespace-nowrap text-[8px] !text-[color:var(--accent)]">
                     {t.nowRail}
@@ -99,6 +189,10 @@ export default function ExecutionClock({ t: d }: { t: Dict }) {
                 </div>
               </div>
             </div>
+
+            {/* why time matters */}
+            <p className="mt-5 max-w-[520px] text-[12.5px] leading-relaxed text-[color:var(--ink-dim)]">{t.clockCopy}</p>
+            <p className="mt-2 max-w-[520px] text-[12.5px] leading-relaxed text-[color:var(--muted)]">{t.clockContext}</p>
           </div>
         </div>
 
@@ -106,7 +200,8 @@ export default function ExecutionClock({ t: d }: { t: Dict }) {
         <div className="mt-10 border border-[color:var(--line)]">
           <div className="grid md:grid-cols-5">
             {EXECUTION_WINDOWS.map((w, i) => {
-              const current = i === 0;
+              const tNow = now.getTime();
+              const current = tNow >= parseDate(w.start).getTime() && tNow <= parseDate(w.end).getTime();
               return (
                 <div
                   key={w.period}
@@ -116,21 +211,23 @@ export default function ExecutionClock({ t: d }: { t: Dict }) {
                 >
                   {current && <div className="absolute inset-x-0 top-0 h-[2px] bg-[color:var(--accent)]" />}
                   <div className="flex items-center justify-between">
-                    <span className={`font-data text-[11px] font-semibold ${current ? "text-[color:var(--accent)]" : "text-[color:var(--ink)]"}`}>
+                    <span
+                      className={`font-data text-[11px] font-semibold ${
+                        current ? "text-[color:var(--accent)]" : "text-[color:var(--ink)]"
+                      }`}
+                    >
                       {w.period}
                     </span>
-                    {current && (
-                      <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-                    )}
+                    {current && <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />}
                   </div>
                   <div className="label mt-2 text-[8.5px] tracking-[0.14em]">{t.windows[i] ?? w.label}</div>
                 </div>
               );
             })}
           </div>
-        </div>
 
-        <p className="label mt-3 text-[8px] tracking-[0.14em]">{t.windowsNote}</p>
+          <p className="label mt-3 text-[8px] tracking-[0.14em]">{t.windowsNote}</p>
+        </div>
       </div>
     </section>
   );

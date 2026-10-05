@@ -97,7 +97,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ lang
   return (
     <div className="min-h-screen">
       <Nav t={t} locale={locale} />
-      <ExecutionClock t={t} />
+      <ExecutionClock t={t} locale={locale} />
 
       {/* signal tape */}
       <div className="relative overflow-hidden border-b border-[color:var(--line)] bg-[#0c0f12] py-2.5">

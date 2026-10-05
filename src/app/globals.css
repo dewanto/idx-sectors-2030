@@ -190,6 +190,15 @@ body {
   animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* motion-sensitive environments: keep all content accessible */
+@media (prefers-reduced-motion: reduce) {
+  .rise-in,
+  .marquee-track,
+  .pulse-dot {
+    animation: none;
+  }
+}
+
 @keyframes scanline {
   0% {
     transform: translateX(-100%);
