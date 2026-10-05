@@ -1197,10 +1197,43 @@ async function main() {
   }
   console.log(`Signals: ${signalCount}`);
   console.log("Seed complete ✔");
-  process.exit(0);
+  return buildSeedReport();
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+export interface SeedReport {
+  companies: number;
+  businessEvents: number;
+  signals: number;
+  researchBriefs: number;
+}
+
+async function buildSeedReport(): Promise<SeedReport> {
+  const [companies] = await db.select({ n: sql<number>`count(*)::int` }).from(s.companies);
+  const [events] = await db.select({ n: sql<number>`count(*)::int` }).from(s.businessEvents);
+  const [signals] = await db.select({ n: sql<number>`count(*)::int` }).from(s.signals);
+  const [briefs] = await db.select({ n: sql<number>`count(*)::int` }).from(s.researchBriefs);
+  return {
+    companies: companies.n,
+    businessEvents: events.n,
+    signals: signals.n,
+    researchBriefs: briefs.n,
+  };
+}
+
+/** Runs the deterministic demo seed against the current DATABASE_URL. */
+export async function runSeed(): Promise<SeedReport> {
+  return main();
+}
+
+/* CLI entry point — skipped when this module is imported by the app. */
+function isDirectRun(): boolean {
+  const arg1 = process.argv[1];
+  return !!arg1 && arg1.replace(/\\/g, "/").endsWith("db/seed.ts");
+}
+
+if (isDirectRun()) {
+  runSeed().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
