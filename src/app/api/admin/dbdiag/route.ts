@@ -58,7 +58,22 @@ function envFileDatabaseUrls(): { line: number; url: string }[] {
 }
 
 function errorFields(err: unknown): Record<string, unknown> {
-  const e = err as { message?: string; code?: string; errno?: number; detail?: string; hint?: string; severity?: string };
+  type Err = {
+    message?: string;
+    code?: string;
+    errno?: number;
+    detail?: string;
+    hint?: string;
+    severity?: string;
+    cause?: unknown;
+  };
+  let e: Err | undefined = err as Err;
+  /* Drizzle wraps the real driver error in .cause — unwrap it so the actual
+     Postgres/network failure (ENOTFOUND, ETIMEDOUT, 28P01, …) is visible. */
+  if (e?.cause && !e.code) {
+    const c = e.cause as Err;
+    if (c && typeof c === "object" && typeof c.message === "string") e = c;
+  }
   return {
     message: e?.message ?? String(err),
     code: e?.code ?? null,
