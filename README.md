@@ -2,7 +2,7 @@
 
 # IDX Sectors 2030
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![Tests](https://img.shields.io/badge/tests-passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
@@ -1404,7 +1404,7 @@ RESEARCH PRIORITY
 ## Prerequisites
 
 - Node.js 20+
-- PostgreSQL 14+
+- PostgreSQL 14+ (production runs PostgreSQL 17)
 - Sectors API key for live data
 
 The application can run using the seeded demonstration dataset without a live Sectors API key.

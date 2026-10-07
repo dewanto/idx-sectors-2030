@@ -1,0 +1,35 @@
+name: Release
+
+# Publishes a GitHub Release whenever a `v*` tag is pushed (locally via
+# scripts/release.sh). Notes come from RELEASE_<tag>.md when present, and
+# deployment-url.txt is attached as an asset when present.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          ARGS=("$TAG" --title "IDX Sectors 2030 ${TAG}")
+          if [ -f "RELEASE_${TAG}.md" ]; then
+            ARGS+=(--notes-file "RELEASE_${TAG}.md")
+          else
+            ARGS+=(--notes "See CHANGELOG.md for the ${TAG} changes.")
+          fi
+          if [ -f deployment-url.txt ]; then
+            ARGS+=("deployment-url.txt")
+          fi
+          gh release create "${ARGS[@]}"
