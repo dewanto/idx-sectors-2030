@@ -44,6 +44,14 @@ Signals + Scores + Rankings
 
 ---
 
+# Product Demo
+
+A guided walkthrough of the platform — from global SDG priority to derived company signals:
+
+https://www.youtube.com/watch?v=8Yp1fmCoaPY
+
+---
+
 # The 2030 Thesis
 
 ## 2030 is not simply a date.
