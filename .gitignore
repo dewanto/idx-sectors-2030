@@ -30,3 +30,6 @@ Thumbs.db
 /playwright-report/
 /playwright/.cache/
 .last-run.json
+
+# Playwright test artifacts
+/e2e-tests/fixtures/dyad/preview-dns.cjs

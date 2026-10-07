@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Crosshair, LayoutGrid, Target, ScanSearch, Gauge, Timer, Info } from "lucide-react";
+import { Crosshair, LayoutGrid, Target, ScanSearch, Gauge, Timer, Info, Play } from "lucide-react";
 import { daysLeftTo2030, liveDateLabel } from "@/lib/live-clock";
 import type { Dict, Locale } from "@/i18n/dict";
 import { hrefLang } from "@/i18n/link";
+import { requestTourStart } from "@/components/OnboardingTour";
 import LangSwitcher from "./LangSwitcher";
 
 export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
@@ -23,7 +24,7 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
   return (
     <header className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[rgba(10,12,14,0.86)] backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 px-4 md:px-8">
-        <Link href={home} className="group flex items-center gap-3">
+        <Link href={home} data-tour="nav-brand" className="group flex items-center gap-3">
           <span className="flex h-8 w-8 items-center justify-center border border-[color:var(--line-strong)] bg-[color:var(--surface)]">
             <Crosshair size={16} className="text-[color:var(--accent)]" strokeWidth={1.8} />
           </span>
@@ -61,9 +62,20 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
             <span suppressHydrationWarning>{liveDateLabel(locale)}</span>
           </span>
           <span className="chip hidden !border-[color:var(--accent)] !text-[color:var(--accent)] md:inline-flex">
-            <span suppressHydrationWarning>D-{daysLeftTo2030().toLocaleString("en-US")}</span>
-          </span>
-          <LangSwitcher locale={locale} />
+                      <span suppressHydrationWarning>D-{daysLeftTo2030().toLocaleString("en-US")}</span>
+                    </span>
+                    <button
+                      type="button"
+                      data-tour="nav-tour-btn"
+                      onClick={requestTourStart}
+                      title={t.tour.navButton}
+                      aria-label={t.tour.navButton}
+                      className="chip cursor-pointer transition-colors hover:!border-[color:var(--accent)] hover:!text-[color:var(--accent)]"
+                    >
+                      <Play size={10} />
+                      <span className="hidden md:inline">{t.tour.navButton}</span>
+                    </button>
+                    <LangSwitcher locale={locale} />
           <a
             href="https://github.com/dewanto/idx-sectors-2030"
             target="_blank"

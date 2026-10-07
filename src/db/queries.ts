@@ -123,6 +123,31 @@ export async function getAllSignals(): Promise<SignalRow[]> {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Onboarding tour                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Ticker used by the onboarding tour's "Company File" stop — the company
+ * behind the strongest active signal, or any tracked company. Cheap query;
+ * never throws (the tour degrades gracefully without a ticker).
+ */
+export async function getTourTicker(): Promise<string | null> {
+  try {
+    const [top] = await db
+      .select({ ticker: s.companies.ticker })
+      .from(s.signals)
+      .innerJoin(s.companies, eq(s.signals.companyId, s.companies.id))
+      .orderBy(desc(s.signals.signalStrength))
+      .limit(1);
+    if (top?.ticker) return top.ticker;
+    const [any] = await db.select({ ticker: s.companies.ticker }).from(s.companies).limit(1);
+    return any?.ticker ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /*  Dashboard                                                           */
 /* ------------------------------------------------------------------ */
 

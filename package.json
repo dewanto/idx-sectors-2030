@@ -14,13 +14,14 @@
     "db:migrate:supabase": "tsx src/db/migrate-to-supabase.ts",
     "db:smoke": "tsx src/db/smoke-sectors.ts",
     "db:smoke:gann": "tsx src/db/smoke-gann.ts",
-        "test": "jest --coverage",
-        "test:e2e": "playwright test --config playwright-dyad.config.ts"
-      },
+    "test": "jest --coverage",
+    "test:e2e": "playwright test --config playwright-dyad.config.ts"
+  },
   "dependencies": {
     "@playwright/test": "^1.63.0",
     "@types/jest": "29.5.14",
     "dotenv": "17.3.1",
+    "driver.js": "^1.9.0",
     "drizzle-orm": "0.45.2",
     "framer-motion": "^13.4.4",
     "jest": "29.7.0",

@@ -104,13 +104,13 @@ export default async function CompanyPage({ params }: { params: Promise<{ lang: 
 
       <main className="mx-auto max-w-[1440px] px-4 py-10 md:px-8">
         <div className="grid gap-4 lg:grid-cols-[1.7fr_1fr]">
-          <div className="panel p-5">
-            <div className="mb-2 flex items-baseline justify-between">
-              <h3 className="text-[15px] font-semibold tracking-tight">{t.company.chartTitle}</h3>
-              <span className="label text-[8px]">{t.company.chartSub}</span>
-            </div>
-            <MarketChart prices={prices} events={markers} height={320} />
-          </div>
+          <div className="panel p-5" data-tour="company-chart">
+                      <div className="mb-2 flex items-baseline justify-between">
+                        <h3 className="text-[15px] font-semibold tracking-tight">{t.company.chartTitle}</h3>
+                        <span className="label text-[8px]">{t.company.chartSub}</span>
+                      </div>
+                      <MarketChart prices={prices} events={markers} height={320} />
+                    </div>
           <div className="flex flex-col gap-4">
             <div className="panel p-5">
               <div className="label mb-3 flex items-center gap-1.5 text-[8px]">

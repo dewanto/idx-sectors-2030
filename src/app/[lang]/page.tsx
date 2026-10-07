@@ -159,19 +159,19 @@ export default async function DashboardPage({ params }: { params: Promise<{ lang
               </Link>
             }
           />
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {d.topSignals.slice(0, 6).map((sig, i) => (
-              <SignalCard key={sig.id} sig={sig} rank={i + 1} t={t} locale={locale} />
-            ))}
-          </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-tour="dash-signals">
+                      {d.topSignals.slice(0, 6).map((sig, i) => (
+                        <SignalCard key={sig.id} sig={sig} rank={i + 1} t={t} locale={locale} />
+                      ))}
+                    </div>
         </section>
 
         {/* 02 — heatmap + momentum */}
         <section className="mt-14 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
-          <div className="panel p-5">
-            <SectionHead index="02" title={t.dash.s2Title} sub={t.dash.s2Sub} />
-            <Heatmap cells={d.heatmap} sectors={d.heatSectors} goals={d.heatGoals} t={t.heat} />
-          </div>
+          <div className="panel p-5" data-tour="dash-heatmap">
+                      <SectionHead index="02" title={t.dash.s2Title} sub={t.dash.s2Sub} />
+                      <Heatmap cells={d.heatmap} sectors={d.heatSectors} goals={d.heatGoals} t={t.heat} />
+                    </div>
           <div className="flex flex-col gap-4">
             <div className="panel p-5">
               <SectionHead index="03" title={t.dash.s3Title} sub={t.dash.s3Sub} />

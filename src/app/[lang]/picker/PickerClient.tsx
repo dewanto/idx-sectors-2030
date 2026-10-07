@@ -182,8 +182,8 @@ export default function PickerClient({
         </div>
 
         {/* SDG grid */}
-        <div className="border-b border-[color:var(--line)] p-4">
-          <div className="label mb-2.5 text-[8px]">{t.scan.stepSdg}</div>
+                <div className="border-b border-[color:var(--line)] p-4" data-tour="picker-goals">
+                  <div className="label mb-2.5 text-[8px]">{t.scan.stepSdg}</div>
           <div className="grid grid-cols-6 gap-1.5">
             {goals.map((g) => {
               const active = goal === g.goalNumber;
@@ -361,9 +361,10 @@ export default function PickerClient({
         {/* actions */}
         <div className="space-y-2 p-4">
           <button
-            onClick={run}
-            className="flex w-full items-center justify-center gap-2 border border-[color:var(--accent)] bg-[color:var(--accent)] px-4 py-3 font-data text-[11px] font-semibold uppercase tracking-[0.16em] text-[#17110a] transition-opacity hover:opacity-85"
-          >
+                      onClick={run}
+                      data-tour="picker-scan"
+                      className="flex w-full items-center justify-center gap-2 border border-[color:var(--accent)] bg-[color:var(--accent)] px-4 py-3 font-data text-[11px] font-semibold uppercase tracking-[0.16em] text-[#17110a] transition-opacity hover:opacity-85"
+                    >
             <ScanSearch size={14} /> {loading ? t.scan.scanning : t.scan.scanBtn}
           </button>
           <button

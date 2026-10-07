@@ -23,7 +23,7 @@ export default async function GannPage({ params }: { params: Promise<{ lang: str
     <div className="min-h-screen">
       <Nav t={t} locale={locale} />
 
-      <section className="dotgrid border-b border-[color:var(--line)] bg-[#0c0f12]">
+      <section className="dotgrid border-b border-[color:var(--line)] bg-[#0c0f12]" data-tour="gann-hero">
         <div className="mx-auto max-w-[1440px] px-4 py-10 md:px-8">
           <div className="flex items-center gap-2">
             <Timer size={14} className="text-[color:var(--accent)]" />
