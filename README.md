@@ -951,30 +951,17 @@ This architecture provides:
 
 ---
 
-# Live Data vs Demonstration Data
+# Live Data
 
-IDX Sectors 2030 supports two operating modes.
+IDX Sectors 2030 runs on live data from the Sectors Financial API v2.
 
-## Live Mode
+The deployment synchronizes real market data — prices, market data, index data, fundamentals, and optional foreign flow — into PostgreSQL, and all scores are derived from that stored data.
 
-When a valid Sectors API key is configured, the application can synchronize live Sectors Financial API v2 data.
+The footer badge shows the live sync status (last sync date, tickers synced, data coverage) and the remaining lifetime credit budget.
 
-The synchronization layer updates stored:
+## Local development fallback
 
-- prices
-- market data
-- index data
-- fundamentals
-- optional foreign-flow data
-- derived scores
-
-## Demonstration Mode
-
-Without a Sectors API key, the application can continue serving its seeded demonstration dataset.
-
-This allows the application to run locally for exploration and development without requiring live credentials.
-
-The application indicates whether the current data state is based on synchronized live data or the demonstration dataset.
+Without a Sectors API key, a local instance can load a deterministic demonstration dataset (`npm run db:seed`) for exploration and development. The footer badge always indicates the current data source.
 
 ---
 
@@ -1421,7 +1408,7 @@ RESEARCH PRIORITY
 - PostgreSQL 14+ (production runs PostgreSQL 17)
 - Sectors API key for live data
 
-The application can run using the seeded demonstration dataset without a live Sectors API key.
+The deployed instance runs on live Sectors API data. Locally, you can develop without an API key using the optional demonstration dataset (see Setup).
 
 ---
 
@@ -1457,16 +1444,16 @@ Create the schema:
 npm run db:push
 ```
 
-Load the demonstration dataset:
-
-```bash
-npm run db:seed
-```
-
 Synchronize live Sectors data:
 
 ```bash
 npm run db:sync
+```
+
+Optional — local exploration without an API key:
+
+```bash
+npm run db:seed
 ```
 
 Run the application:
@@ -1515,7 +1502,7 @@ An empty `DIRECT_URL` should not be left in the environment because it can overr
 | `npm run test` | Run unit tests (Jest, with coverage) |
 | `npm run test:e2e` | Run Playwright end-to-end tests |
 | `npm run db:push` | Apply database schema |
-| `npm run db:seed` | Load demonstration dataset |
+| `npm run db:seed` | Load optional local demonstration dataset |
 | `npm run db:sync` | Synchronize market data |
 | `npm run db:sync -- --full` | Force fundamentals refresh |
 | `npm run db:sync -- --flow` | Pull foreign-flow data |
