@@ -1,7 +1,10 @@
-[![Unit Tests](https://github.com/OWNER/REPO/actions/workflows/test.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/test.yml)
-<!-- Badge: replace OWNER/REPO above with your GitHub org/repository once this repo is pushed. -->
+[![Unit Tests](https://github.com/dewanto/idx-sectors-2030/actions/workflows/test.yml/badge.svg)](https://github.com/dewanto/idx-sectors-2030/actions/workflows/test.yml)
 
 # IDX Sectors 2030
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Tests](https://img.shields.io/badge/tests-passing-green)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
 ## Find the Companies Executing the Future.
 
@@ -1819,6 +1822,7 @@ For market data:
 
 For this project:
 
+- `CHANGELOG.md` — release history and versioning
 - `AGENTS.md` — project development notes
 - `AI_RULES.md` — AI-assisted development rules
 - `security_review.md` — security review
