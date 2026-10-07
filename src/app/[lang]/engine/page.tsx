@@ -24,6 +24,7 @@ import { dictFor, normalizeLocale } from "@/i18n/server";
 import { tpl } from "@/i18n/dict";
 import { PRICE_FLOOR_CONFIG, type CompanyEngineResult } from "@/lib/regime";
 import { fmtDate, fmtIdr, fmtPct, fmtPrice } from "@/lib/system";
+import { liveDateLabel } from "@/lib/live-clock";
 
 export const dynamic = "force-dynamic";
 
@@ -120,7 +121,7 @@ export default async function EnginePage({ params }: { params: Promise<{ lang: s
             <span className="chip !border-[rgba(242,92,92,0.4)] !text-[#F25C5C]">
               <ShieldAlert size={11} /> {e.disclaimerChip}
             </span>
-            <span className="chip">{tpl(e.computedTpl, { n: d.aggregate.n })}</span>
+            <span className="chip">{tpl(e.computedTpl, { n: d.aggregate.n, d: liveDateLabel(locale) })}</span>
           </div>
         </div>
       </section>

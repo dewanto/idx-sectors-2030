@@ -8,6 +8,7 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { sql } from "drizzle-orm";
 import { dictFor, normalizeLocale } from "@/i18n/server";
+import { daysLeftTo2030, liveDateLabel } from "@/lib/live-clock";
 import { hrefLang } from "@/i18n/link";
 
 export const dynamic = "force-dynamic";
@@ -317,10 +318,12 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           <SectionHead index="10" title={a.clockTitle} sub={a.clockSub} />
           <div className="panel p-5 md:p-6">
             <div className="mb-5 flex flex-wrap gap-2">
-              <span className="chip">{a.clockNow}</span>
+              <span className="chip">{a.clockNow} · {liveDateLabel(locale)}</span>
               <span className="chip">{a.clockAdopted}</span>
               <span className="chip !border-[rgba(242,92,92,0.4)] !text-[#F25C5C]">{a.clockDeadline}</span>
-              <span className="chip !border-[color:var(--accent)] !text-[color:var(--accent)]">{a.clockDays}</span>
+              <span className="chip !border-[color:var(--accent)] !text-[color:var(--accent)]">
+                D-{daysLeftTo2030().toLocaleString("en-US")}
+              </span>
             </div>
             <div className="border border-[color:var(--line-strong)]">
               <LiveCountdown labels={t.countdown} />

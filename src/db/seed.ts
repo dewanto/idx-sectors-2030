@@ -1187,7 +1187,7 @@ async function main() {
         "Peer comparison: identify whether sector peers show similar SDG-target activity (sector momentum)",
         "Fundamental impact: model revenue/cost contribution timing against company disclosures",
       ],
-      limitations: `The SDG classification is a system-generated evidence mapping and is not UN certification or endorsement. The 2030 execution windows are product operating heuristics; the UN 2030 Agenda does not prescribe company-level project timelines. Market data in this environment is a seeded demonstration series pending live Sectors API connectivity. This brief is research intelligence, not investment advice, and does not predict future prices.`,
+      limitations: `The SDG classification is a system-generated evidence mapping and is not UN certification or endorsement. The 2030 execution windows are product operating heuristics; the UN 2030 Agenda does not prescribe company-level project timelines. Market data is synchronized live from the Sectors API; coverage follows the current sync window. This brief is research intelligence, not investment advice, and does not predict future prices.`,
       citations: [
         { label: `${e.source} — event evidence (${e.date})`, url: e.url, tier: e.tier },
         { label: `UN SDG Goal ${e.mapping.goal} — official framework`, url: `https://sdgs.un.org/goals/goal${e.mapping.goal}`, tier: 1 },

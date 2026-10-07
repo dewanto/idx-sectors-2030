@@ -535,13 +535,12 @@ const en = {
 
     /* 10 — THE 2030 EXECUTION CLOCK */
     clockTitle: "THE 2030 EXECUTION CLOCK",
-    clockSub: "A fixed system clock keeps every number on the same page.",
+    clockSub: "One live clock keeps every number on the same page.",
     clockBody:
-      "The product runs on a fixed system date — 28 Sep 2026 — counting down to 31 Dec 2030. As 2030 approaches, the remaining execution horizon becomes increasingly relevant to research and capital-allocation decisions.",
-    clockNow: "System clock · 28 Sep 2026",
+      "The product runs on the live system clock — counting down to 31 Dec 2030. As 2030 approaches, the remaining execution horizon becomes increasingly relevant to research and capital-allocation decisions.",
+    clockNow: "System clock",
     clockAdopted: "UN agenda adopted · 25 Sep 2015",
     clockDeadline: "Deadline · 31 Dec 2030",
-    clockDays: "D-1,555",
 
     /* 11 — ADDITIONAL TIME CONTEXT */
     gannTitle: "ADDITIONAL TIME CONTEXT",
@@ -607,14 +606,13 @@ const en = {
     disc2b: "product heuristics",
     disc2c: ".",
     disc3:
-      "Research intelligence only. Not investment advice. No price prediction, no buy/sell recommendations. Market data in this demo environment is a seeded series pending live Sectors API connectivity.",
+      "Research intelligence only. Not investment advice. No price prediction, no buy/sell recommendations. Market data is synchronized live from the Sectors API (rolling ~90-day window per ticker).",
     chainTitle: "Evidence chain",
     chain: ["News", "Business Event", "SDG Target", "Execution Stage", "2030 Timing", "Sectors", "Signal", "Brief"],
     gridMeta: [
       "Framework · UN 2030 Agenda (17 goals / 169 targets)",
       "Market truth · Sectors API",
       "Synthesis · research agents (verified inputs only)",
-      "System date · 28 Sep 2026 · D-1,555",
     ],
   },
   gann: {
@@ -715,7 +713,7 @@ const en = {
       RE_RATING: "Re-rating",
       LATE_CYCLE: "Late cycle",
     } as Record<string, string>,
-    computedTpl: "Computed from {n} listed companies · 28 Sep 2026",
+    computedTpl: "Computed from {n} listed companies · {d}",
     scenTitle: "Internal 2026–2030 Macro Scenario",
     scenSub: "A scenario layer for monitoring — never an assumption about the future",
     scenCardStatus: ["PARTIALLY CONFIRMED", "PENDING OBSERVATION", "PENDING OBSERVATION", "PENDING OBSERVATION", "PENDING OBSERVATION"],
@@ -1466,13 +1464,12 @@ const id: Dict = {
 
     /* 10 — JAM EKSEKUSI 2030 */
     clockTitle: "JAM EKSEKUSI 2030",
-    clockSub: "Jam sistem yang tetap menjaga setiap angka di halaman yang sama.",
+    clockSub: "Satu jam yang live menjaga setiap angka di halaman yang sama.",
     clockBody:
-      "Produk berjalan dengan tanggal sistem tetap — 28 Sep 2026 — menghitung mundur ke 31 Des 2030. Saat 2030 mendekat, horizon eksekusi yang tersisa semakin relevan untuk keputusan riset dan alokasi modal.",
-    clockNow: "Jam sistem · 28 Sep 2026",
+      "Produk berjalan dengan jam sistem live — menghitung mundur ke 31 Des 2030. Saat 2030 mendekat, horizon eksekusi yang tersisa semakin relevan untuk keputusan riset dan alokasi modal.",
+    clockNow: "Jam sistem",
     clockAdopted: "Agenda PBB diadopsi · 25 Sep 2015",
     clockDeadline: "Tenggat · 31 Des 2030",
-    clockDays: "D-1.555",
 
     /* 11 — KONTEKS WAKTU TAMBAHAN */
     gannTitle: "KONTEKS WAKTU TAMBAHAN",
@@ -1538,14 +1535,13 @@ const id: Dict = {
     disc2b: "heuristik produk",
     disc2c: ".",
     disc3:
-      "Hanya intelijen riset. Bukan saran investasi. Tanpa prediksi harga, tanpa rekomendasi beli/jual. Data pasar di lingkungan demo ini adalah seri berbenih menunggu konektivitas Sectors API langsung.",
+      "Hanya intelijen riset. Bukan saran investasi. Tanpa prediksi harga, tanpa rekomendasi beli/jual. Data pasar disinkronkan langsung dari Sectors API (jendela bergulir ~90 hari per ticker).",
     chainTitle: "Rantai bukti",
     chain: ["Berita", "Peristiwa Bisnis", "Target SDG", "Tahap Eksekusi", "Waktu 2030", "Sectors", "Sinyal", "Ringkasan"],
     gridMeta: [
       "Kerangka · Agenda 2030 PBB (17 tujuan / 169 target)",
       "Kebenaran pasar · Sectors API",
       "Sintesis · agen riset (hanya masukan terverifikasi)",
-      "Tanggal sistem · 28 Sep 2026 · D-1.555",
     ],
   },
   gann: {
@@ -1646,7 +1642,7 @@ const id: Dict = {
       RE_RATING: "Re-rating",
       LATE_CYCLE: "Akhir siklus",
     },
-    computedTpl: "Dihitung dari {n} perusahaan tercatat · 28 Sep 2026",
+    computedTpl: "Dihitung dari {n} perusahaan tercatat · {d}",
     scenTitle: "Skenario Makro Internal 2026–2030",
     scenSub: "Lapisan skenario untuk pemantauan — bukan asumsi tentang masa depan",
     scenCardStatus: ["TERKONFIRMASI SEBAGIAN", "MENUNGGU OBSERVASI", "MENUNGGU OBSERVASI", "MENUNGGU OBSERVASI", "MENUNGGU OBSERVASI"],
@@ -2383,13 +2379,12 @@ const zh: Dict = {
 
     /* 10 — 2030 执行时钟 */
     clockTitle: "2030 执行时钟",
-    clockSub: "固定系统时钟让每个数字在同一页面上。",
+    clockSub: "统一的实时时钟让每个数字在同一页面上。",
     clockBody:
-      "产品运行在固定系统日期——2026 年 9 月 28 日——并向 2030 年 12 月 31 日倒计时。随着 2030 临近，剩余执行期对研究与资本配置决策越来越相关。",
-    clockNow: "系统时钟 · 2026年9月28日",
+      "产品运行在实时系统时钟上——并向 2030 年 12 月 31 日倒计时。随着 2030 临近，剩余执行期对研究与资本配置决策越来越相关。",
+    clockNow: "系统时钟",
     clockAdopted: "联合国议程通过 · 2015年9月25日",
     clockDeadline: "期限 · 2030年12月31日",
-    clockDays: "D-1,555",
 
     /* 11 — 附加时间语境 */
     gannTitle: "附加时间语境",
@@ -2455,14 +2450,13 @@ const zh: Dict = {
     disc2b: "产品启发式方法",
     disc2c: "。",
     disc3:
-      "仅供研究情报使用。不构成投资建议。不预测价格，不提供买卖建议。本演示环境中的市场数据为接入 Sectors API 前的种子序列。",
+      "仅供研究情报使用。不构成投资建议。不预测价格，不提供买卖建议。市场数据由 Sectors API 实时同步（每只股票约 90 天滚动窗口）。",
     chainTitle: "证据链",
     chain: ["新闻", "商业事件", "SDG 子目标", "执行阶段", "2030 时机", "Sectors", "信号", "简报"],
     gridMeta: [
       "框架 · 联合国 2030 议程（17 目标 / 169 子目标）",
       "市场真实来源 · Sectors API",
       "合成 · 研究代理（仅已验证输入）",
-      "系统日期 · 2026年9月28日 · D-1,555",
     ],
   },
   gann: {
@@ -2563,7 +2557,7 @@ const zh: Dict = {
       RE_RATING: "重估",
       LATE_CYCLE: "周期尾部",
     },
-    computedTpl: "基于 {n} 家上市公司计算 · 2026年9月28日",
+    computedTpl: "基于 {n} 家上市公司计算 · {d}",
     scenTitle: "内部 2026–2030 宏观情景",
     scenSub: "用于监测的情景层——绝不对未来做假设",
     scenCardStatus: ["部分确认", "待观察", "待观察", "待观察", "待观察"],
