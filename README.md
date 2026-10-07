@@ -44,11 +44,11 @@ Signals + Scores + Rankings
 
 ---
 
-# Product Demo
+# Product Teaser
 
-A guided walkthrough of the platform — from global SDG priority to derived company signals:
+A 1-minute teaser of IDX Sectors 2030 — the 2030 execution intelligence platform for Indonesian markets:
 
-[![IDX Sectors 2030 — product walkthrough](https://img.youtube.com/vi/8Yp1fmCoaPY/hqdefault.jpg)](https://www.youtube.com/watch?v=8Yp1fmCoaPY)
+[![IDX Sectors 2030 — 1-minute product teaser](https://img.youtube.com/vi/8Yp1fmCoaPY/hqdefault.jpg)](https://www.youtube.com/watch?v=8Yp1fmCoaPY)
 
 ---
 
