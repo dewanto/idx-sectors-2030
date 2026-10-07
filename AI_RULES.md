@@ -33,3 +33,10 @@
 - **Type safety:** Keep `strict: true`; run `npm run typecheck` before committing.
 - **Linting:** Run `npm run lint` — ESLint with `eslint-config-next`.
 - **Dev workflow:** `npm run dev` starts the local server on `http://localhost:3000`.
+
+## Release Process
+
+- **Who executes:** Dyad prepares release artifacts (CHANGELOG entry, `RELEASE_vX.Y.Z.md`, version bump in `package.json` + package-lock root, README badge) and commits; the **user** runs `git push origin main` + `bash scripts/release.sh vX.Y.Z` manually in Git Bash on Windows (Dyad has no shell-execution tool — verify tags afterward with read-only git tools).
+- **Version badge (always, user request):** On every release, update the version badge in `README.md` — bump the number AND keep it linked to the releases page:
+  `[![Version](https://img.shields.io/badge/version-X.Y.Z-blue)](https://github.com/dewanto/idx-sectors-2030/releases)`
+- **CI publishes the Release:** `.github/workflows/release.yml` creates the GitHub Release object from `RELEASE_<tag>.md` (attaching `deployment-url.txt`) whenever a `v*` tag is pushed.
