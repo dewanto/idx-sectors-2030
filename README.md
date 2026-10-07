@@ -48,7 +48,7 @@ Signals + Scores + Rankings
 
 A guided walkthrough of the platform — from global SDG priority to derived company signals:
 
-https://www.youtube.com/watch?v=8Yp1fmCoaPY
+[![IDX Sectors 2030 — product walkthrough](https://img.youtube.com/vi/8Yp1fmCoaPY/hqdefault.jpg)](https://www.youtube.com/watch?v=8Yp1fmCoaPY)
 
 ---
 
