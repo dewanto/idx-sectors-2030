@@ -54,8 +54,8 @@ import { priceFloorBandFor } from "../lib/regime";
 import { STAGE_META } from "../lib/system";
 import { refreshWatchlist } from "./watchlist";
 
-const iso = (d: Date) => d.toISOString().slice(0, 10);
-const addDays = (dateIso: string, days: number) =>
+export const iso = (d: Date) => d.toISOString().slice(0, 10);
+export const addDays = (dateIso: string, days: number) =>
   iso(new Date(new Date(`${dateIso}T00:00:00Z`).getTime() + days * 86_400_000));
 
 const UNIVERSE = (process.env.SECTORS_UNIVERSE || "curated").toLowerCase();

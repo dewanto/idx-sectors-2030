@@ -1,3 +1,6 @@
+[![Unit Tests](https://github.com/OWNER/REPO/actions/workflows/test.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/test.yml)
+<!-- Badge: replace OWNER/REPO above with your GitHub org/repository once this repo is pushed. -->
+
 # IDX Sectors 2030
 
 ## Find the Companies Executing the Future.
@@ -1100,7 +1103,7 @@ src/
 | ORM | Drizzle ORM 0.45 |
 | Styling | Tailwind CSS 4 |
 | Market Data | Sectors Financial API v2 |
-| Testing | Playwright |
+| Testing | Jest (unit) + Playwright (e2e) |
 | Internationalization | English / Indonesian / Chinese |
 
 ---
@@ -1492,7 +1495,8 @@ An empty `DIRECT_URL` should not be left in the environment because it can overr
 | `npm start` | Start production server |
 | `npm run lint` | Run ESLint |
 | `npm run typecheck` | Run TypeScript type checking |
-| `npm run test` | Run Playwright tests |
+| `npm run test` | Run unit tests (Jest, with coverage) |
+| `npm run test:e2e` | Run Playwright end-to-end tests |
 | `npm run db:push` | Apply database schema |
 | `npm run db:seed` | Load demonstration dataset |
 | `npm run db:sync` | Synchronize market data |
@@ -1583,10 +1587,21 @@ This provides:
 
 The repository includes automated tests and validation utilities.
 
-Run the full test suite:
+Run the unit suite — pure-logic Jest tests over the intelligence engine
+(Sectors API client, scoring, market intelligence, regime math, Gann 432,
+watchlist ranking). No database, no network, no API key required:
 
 ```bash
 npm run test
+```
+
+Coverage is written to `coverage/` and uploaded by the
+`.github/workflows/test.yml` CI workflow.
+
+Run the end-to-end suite (Playwright, requires the app + database running):
+
+```bash
+npm run test:e2e
 ```
 
 Run type checking:

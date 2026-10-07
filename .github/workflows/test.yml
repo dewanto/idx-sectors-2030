@@ -1,0 +1,35 @@
+name: Unit Tests
+
+# Fast, deterministic checks only: pure-logic Jest unit tests (no DB, no
+# network, no API key). Playwright e2e stays separate (`npm run test:e2e`).
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    name: Jest unit suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests (Jest + coverage)
+        run: npm test
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
