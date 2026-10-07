@@ -369,7 +369,8 @@ describe("fetchCompaniesAllPages", () => {
     expect(seen.map((r) => r.symbol)).toEqual(["AAAA.JK", "BBBB.JK", "CCCC.JK"]);
     expect(fetchMock).toHaveBeenCalledTimes(2);
     const [firstUrl, secondUrl] = fetchMock.mock.calls.map(([u]) => (u as URL).href);
-    expect(firstUrl).toContain("/companies/?order_by=-market_cap&limit=2&offset=0");
+    expect(firstUrl).toContain("where=sector+%3D+%27Bank%27");
+        expect(firstUrl).toContain("order_by=-market_cap&limit=2&offset=0");
     expect(secondUrl).toContain("offset=2"); // resumed from next_offset
     // the no-cache policy holds for every call in the walk
     expect(fetchMock.mock.calls.every(([, init]) => (init as RequestInit).cache === "no-store")).toBe(true);

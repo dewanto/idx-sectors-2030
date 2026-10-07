@@ -377,7 +377,7 @@ export async function fetchCompaniesAllPages(
   for (;;) {
     const res = await fetchCompanies({ where: opts.where, orderBy: opts.orderBy, limit: pageSize, offset });
     const stop = await onPage(res.results, res.pagination);
-    if (stop || !res.pagination.has_next || res.pagination.next_offset === null) return;
+    if (stop === false || !res.pagination.has_next || res.pagination.next_offset === null) return;
     offset = res.pagination.next_offset;
   }
 }
