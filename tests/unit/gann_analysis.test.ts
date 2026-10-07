@@ -59,11 +59,12 @@ function vSeries(bottomIndex: number, weeks: number, step = 25, low = 5342.14): 
 /* ------------------------------------------------------------------ */
 
 describe("fibLevels", () => {
-  it("derives the ladder from the detected (low, high) pair — 0.618 ≈ 6955.04 for (5342.14, 7952)", () => {
-    const levels = fibLevels(5342.14, 7952, 7000);
-    expect(levels.map((l) => l.ratio)).toEqual([...FIB_RATIOS]);
-    // lo + ratio × (hi − lo), hi=7952, lo=5342.14, range=2609.86
-    expect(levels[3].price).toBeCloseTo(6955.04, 2); // 5342.14 + 0.618 × 2609.86
+  it("derives the ladder from the detected (low, high) pair — 0.618 ≈ 6955.03 for (5342.14, 7952)", () => {
+      const levels = fibLevels(5342.14, 7952, 7000);
+      expect(levels.map((l) => l.ratio)).toEqual([...FIB_RATIOS]);
+      // lo + ratio × (hi − lo), hi=7952, lo=5342.14, range=2609.86
+      // 5342.14 + 0.618 × 2609.86 = 5342.14 + 1612.89348 = 6955.03348 → "6955.03"
+      expect(levels[3].price).toBeCloseTo(6955.03, 2);
     expect(levels[0].price).toBeCloseTo(5958.07, 2);
     expect(levels[2].price).toBeCloseTo(6647.07, 2); // midpoint
     expect(levels[4].price).toBeCloseTo(7393.49, 2);
@@ -86,7 +87,7 @@ describe("fibLevels", () => {
       "BELOW",
       "ABOVE",
     ]);
-    expect(levels[3].distancePct).toBeCloseTo(-0.64, 2); // (6955.04 − 7000)/7000
+    expect(levels[3].distancePct).toBeCloseTo(-0.64, 2); // (6955.03 − 7000)/7000
     expect(levels[4].distancePct).toBeCloseTo(5.62, 2); // (7393.49 − 7000)/7000
 
     // sitting exactly on the 0.5 level → "AT"

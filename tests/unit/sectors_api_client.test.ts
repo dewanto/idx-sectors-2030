@@ -2,16 +2,26 @@
  * Unit tests — Sectors Financial API v2 client (`src/lib/sectors.ts`).
  *
  * `global.fetch` is mocked, so nothing ever leaves the process. Retry/backoff
- * paths run under jest fake timers: the exponential backoff (750 ms – 8 s)
- * and the 429 cooldown (5 s – 30 s) are advanced explicitly, and the
- * `retry-after` header test proves the header overrides the curve by
- * completing four attempts within 7 s (the exponential 429 path needs 35 s).
+ * paths run under ONE file-wide fake-timer clock installed in `beforeAll`,
+ * not per-test. The module-level pacer (`lastCallAt` in `src/lib/sectors.ts`)
+ * persists across tests in this file: re-installing fake timers per test
+ * resets the clock to real now while `lastCallAt` stayed in the fake future,
+ * so `pace()` "owed" thousands of ms of sleep (pace debt) that the test's
+ * advance window never covered — the source of the old timeouts, orphaned
+ * promise chains and cross-test contamination. A single monotonic clock
+ * installed once keeps `lastCallAt` ≤ clock, so pace debt is always zero.
+ *
+ * Tests that wait for a rejection use catch-at-creation
+ * (`const settled = promise.catch((err) => err)`) so the rejection is handled
+ * from birth — no unhandled-rejection windows, no
+ * `PromiseRejectionHandledWarning`, no double-reported failures.
  *
  * Cache policy is asserted at the wire level: every call ships
  * `cache: "no-store"` — by design there is no response cache to invalidate.
  *
  * `tests/setupEnv.ts` pins SECTORS_MIN_INTERVAL_MS=0 BEFORE these modules
- * load, because `src/lib/sectors.ts` reads that constant at import time.
+ * load, because `src/lib/sectors.ts` reads that constant at import time
+ * (pace() becomes a no-op — the tests below advance backoff timers only).
  */
 import {
   creditBudget,
@@ -93,12 +103,17 @@ beforeAll(() => {
   savedKey = process.env.SECTORS_API_KEY;
   savedBase = process.env.SECTORS_API_BASE_URL;
   realFetch = globalThis.fetch;
+  // One monotonic clock for the whole file — `lastCallAt` can never be in
+  // front of the clock, so pace debt is always zero. Installed once, removed
+  // once in afterAll; tests only advance time explicitly.
+  jest.useFakeTimers();
 });
 
 afterAll(() => {
   setEnv("SECTORS_API_KEY", savedKey);
   setEnv("SECTORS_API_BASE_URL", savedBase);
   globalThis.fetch = realFetch;
+  jest.useRealTimers();
 });
 
 beforeEach(() => {
@@ -106,10 +121,6 @@ beforeEach(() => {
   creditBudget.remaining = Infinity;
   setEnv("SECTORS_API_KEY", "unit-test-dummy-key");
   setEnv("SECTORS_API_BASE_URL", undefined);
-});
-
-afterEach(() => {
-  jest.useRealTimers();
 });
 
 /* ------------------------------------------------------------------ */
@@ -205,26 +216,25 @@ describe("fetchDailyPrice — request shape and DailyPriceRow parsing", () => {
 
 describe("429 rate limiting", () => {
   it("retries four attempts honouring retry-after, then throws a retryable SectorsApiError", async () => {
-    jest.useFakeTimers();
     fetchMock.mockResolvedValue(errorResponse(429, { "retry-after": "2" }, "quota"));
 
     const promise = fetchDailyPrice("BBCA");
+    const settled = promise.catch((err) => err); // handled since birth
     // 3 backoffs × 2 s = 6 s — the exponential 429 curve (5+10+20 s) needs 35 s,
     // so completing here proves the retry-after header wins.
     await jest.advanceTimersByTimeAsync(7_000);
+    const err = (await settled) as SectorsApiError;
 
-    await expect(promise).rejects.toThrow(SectorsApiError);
-    await expect(promise).rejects.toMatchObject({
-      status: 429,
-      retryable: true,
-      retryAfterMs: 2000,
-    });
-    await expect(promise).rejects.toThrow(/429 on \/daily\/BBCA\.JK\//);
+    expect(err).toBeInstanceOf(SectorsApiError);
+    expect(err.status).toBe(429);
+    expect(err.retryable).toBe(true);
+    expect(err.retryAfterMs).toBe(2000);
+    // `.JK` is a response-symbol suffix only — the request path is `/daily/BBCA/`
+    expect(err.message).toMatch(/429 on \/daily\/BBCA\//);
     expect(fetchMock).toHaveBeenCalledTimes(4); // MAX_ATTEMPTS
   });
 
   it("recovers when a 429 is followed by a 200 and spends budget exactly once", async () => {
-    jest.useFakeTimers();
     creditBudget.remaining = 5;
     fetchMock
       .mockResolvedValueOnce(errorResponse(429))
@@ -246,15 +256,17 @@ describe("429 rate limiting", () => {
 
 describe("timeout and retry classification", () => {
   it("maps AbortError to a retryable status-0 timeout error after 4 attempts", async () => {
-    jest.useFakeTimers();
     const abortError = Object.assign(new Error("The operation was aborted"), { name: "AbortError" });
     fetchMock.mockRejectedValue(abortError);
 
     const promise = fetchDailyPrice("BBCA");
-    await jest.advanceTimersByTimeAsync(10_000); // 750 + 1500 + 3000 backoffs
+    const settled = promise.catch((err) => err); // handled since birth
+    await jest.advanceTimersByTimeAsync(12_000); // 750 + 1500 + 3000 ms backoffs
+    const err = (await settled) as SectorsApiError;
 
-    await expect(promise).rejects.toThrow(/timeout/);
-    await expect(promise).rejects.toMatchObject({ status: 0, retryable: true });
+    expect(err.message).toMatch(/timeout/);
+    expect(err.status).toBe(0);
+    expect(err.retryable).toBe(true);
     expect(fetchMock).toHaveBeenCalledTimes(4);
   });
 
@@ -269,10 +281,11 @@ describe("timeout and retry classification", () => {
   });
 
   it("retries 503 with the exponential 750 ms curve and throws after the 4th attempt", async () => {
-    jest.useFakeTimers();
     fetchMock.mockResolvedValue(errorResponse(503));
 
     const promise = fetchDailyPrice("BBCA");
+    const settled = promise.catch((err) => err); // handled since birth
+
     await jest.advanceTimersByTimeAsync(1_000); // crosses the 750 ms first backoff
     expect(fetchMock).toHaveBeenCalledTimes(2);
 
@@ -280,7 +293,9 @@ describe("timeout and retry classification", () => {
     expect(fetchMock).toHaveBeenCalledTimes(3);
 
     await jest.advanceTimersByTimeAsync(4_000); // crosses the 3000 ms third backoff
-    await expect(promise).rejects.toMatchObject({ status: 503, retryable: true });
+    const err = (await settled) as SectorsApiError;
+    expect(err.status).toBe(503);
+    expect(err.retryable).toBe(true);
     expect(fetchMock).toHaveBeenCalledTimes(4);
   });
 });

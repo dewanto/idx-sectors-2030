@@ -37,7 +37,12 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   testMatch: ["<rootDir>/tests/unit/**/*.test.ts"],
-  resetMocks: true,
+    // CI insurance: the default 5 s timeout can false-trip when a busy runner
+    // merely executes slowly (the retry/backoff tests advance fake timers, but
+    // wall-clock scheduling jitter still applies). 15 s keeps slow-but-correct
+    // runs green without masking real hangs for long.
+    testTimeout: 15_000,
+    resetMocks: true,
   collectCoverageFrom: ["src/lib/**/*.ts"],
   coverageDirectory: "coverage",
   coverageReporters: ["text-summary", "lcov"],
