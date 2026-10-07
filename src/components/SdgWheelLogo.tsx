@@ -14,7 +14,10 @@ const GAP_HALF = 1.05; // degrees of breathing room between segments
 
 function polar(r: number, deg: number): [number, number] {
   const rad = ((deg - 90) * Math.PI) / 180;
-  return [CX + r * Math.cos(rad), CY + r * Math.sin(rad)];
+  // Round to 3 decimals — Math.cos/sin precision differs between the server
+  // and the browser, and unrounded floats in `d` cause hydration mismatches.
+  const round = (v: number) => Number(v.toFixed(3));
+  return [round(CX + r * Math.cos(rad)), round(CY + r * Math.sin(rad))];
 }
 
 function segPath(startDeg: number, endDeg: number) {
