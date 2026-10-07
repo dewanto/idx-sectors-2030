@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Crosshair, LayoutGrid, Target, ScanSearch, Gauge, Timer, Info, Play } from "lucide-react";
+import { LayoutGrid, Target, ScanSearch, Gauge, Timer, Info, Play } from "lucide-react";
 import { daysLeftTo2030, liveDateLabel } from "@/lib/live-clock";
 import type { Dict, Locale } from "@/i18n/dict";
 import { hrefLang } from "@/i18n/link";
 import { requestTourStart } from "@/components/OnboardingTour";
+import SdgWheelLogo from "@/components/SdgWheelLogo";
 import LangSwitcher from "./LangSwitcher";
 
 export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
@@ -26,7 +27,7 @@ export default function Nav({ t, locale }: { t: Dict; locale: Locale }) {
       <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 px-4 md:px-8">
         <Link href={home} data-tour="nav-brand" className="group flex items-center gap-3">
           <span className="flex h-8 w-8 items-center justify-center border border-[color:var(--line-strong)] bg-[color:var(--surface)]">
-            <Crosshair size={16} className="text-[color:var(--accent)]" strokeWidth={1.8} />
+            <SdgWheelLogo className="h-[18px] w-[18px]" />
           </span>
           <span className="leading-none">
             <span className="block text-[13px] font-semibold tracking-tight">

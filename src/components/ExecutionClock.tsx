@@ -138,8 +138,20 @@ export default function ExecutionClock({ t: d, locale }: { t: Dict; locale: Loca
             </div>
           </div>
 
-          {/* ── right — the execution clock ───────────────────── */}
+          {/* ── right — teaser video (desktop) + the execution clock ── */}
           <div className="rise-in" style={{ animationDelay: "0.4s" }}>
+            <div className="hidden lg:block">
+              <div className="border border-[color:var(--line-strong)]">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/8Yp1fmCoaPY?autoplay=1&mute=1&loop=1&playlist=8Yp1fmCoaPY&playsinline=1&rel=0"
+                  title="IDX Sectors 2030 — 1-minute product teaser"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="aspect-video w-full"
+                />
+              </div>
+              <p className="label mt-2 text-[8px] tracking-[0.14em]">PRODUCT TEASER · MUTED AUTOPLAY</p>
+            </div>
             <p className="label mb-2 text-[9px] tracking-[0.22em] text-[color:var(--accent)]">{t.horizonLabel}</p>
             <div className="mb-2 flex items-center justify-between">
               <span className="label text-[9px]">{t.clockRemaining}</span>
