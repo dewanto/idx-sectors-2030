@@ -7,13 +7,13 @@ import * as schema from "@/db/schema";
 import { desc, sql } from "drizzle-orm";
 
 /**
- * Data-source badge: "Live · Sectors API" when a sync has run, "Demo dataset"
- * otherwise. Shows the remaining lifetime credit budget so quota usage is
- * visible at a glance. Defensive — a DB hiccup must never break the footer.
+ * Data-source badge: "Live · Sectors API" once a sync has run, "Awaiting first
+ * sync" otherwise. Shows the remaining lifetime credit budget so quota usage
+ * is visible at a glance. Defensive — a DB hiccup must never break the footer.
  */
 async function DataSourceBadge() {
-  let label = "Demo dataset";
-  let hint = "Seeded demonstration series — no live sync yet (npm run db:sync)";
+  let label = "Awaiting first sync";
+  let hint = "No Sectors sync recorded yet — run npm run db:sync to load live data";
   try {
     const rows = await db
       .select()
@@ -34,7 +34,7 @@ async function DataSourceBadge() {
         `through ${st.lastTradingDate ?? "n/a"} · ${preused + sum.used}/${total} credits used`;
     }
   } catch {
-    /* keep demo label */
+    /* keep fallback label */
   }
   const live = label.startsWith("Live");
   return (

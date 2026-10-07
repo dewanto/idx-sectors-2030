@@ -1,6 +1,6 @@
 {
   "name": "nextjs-postgresql-template",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
@@ -9,7 +9,6 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx src/db/seed.ts",
     "db:sync": "tsx src/db/sync.ts",
     "db:migrate:supabase": "tsx src/db/migrate-to-supabase.ts",
     "db:smoke": "tsx src/db/smoke-sectors.ts",

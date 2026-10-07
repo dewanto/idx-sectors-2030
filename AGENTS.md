@@ -185,7 +185,6 @@ export PATH="/c/Program Files/nodejs:$PATH"   # required in every shell
 
 npm run dev                    # dev server (port printed in .freebuff/dev-server.log)
 npm run db:push                # schema (DIRECT_URL ?? DATABASE_URL)
-npm run db:seed                # reload the demonstration dataset
 npm run db:smoke               # 2-credit live API shape check
 npm run db:sync                # watchlist prices + snapshots + intel scores (~1 credit/ticker)
 npm run db:sync -- --dry-run   # watchlist selection + cost plan, 0 API calls

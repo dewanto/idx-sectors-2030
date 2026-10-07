@@ -2,7 +2,7 @@
 
 # IDX Sectors 2030
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/dewanto/idx-sectors-2030/releases)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue)](https://github.com/dewanto/idx-sectors-2030/releases)
 ![Tests](https://img.shields.io/badge/tests-passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
@@ -959,10 +959,6 @@ The deployment synchronizes real market data — prices, market data, index data
 
 The footer badge shows the live sync status (last sync date, tickers synced, data coverage) and the remaining lifetime credit budget.
 
-## Local development fallback
-
-Without a Sectors API key, a local instance can load a deterministic demonstration dataset (`npm run db:seed`) for exploration and development. The footer badge always indicates the current data source.
-
 ---
 
 # Sectors Financial API Integration
@@ -1408,7 +1404,7 @@ RESEARCH PRIORITY
 - PostgreSQL 14+ (production runs PostgreSQL 17)
 - Sectors API key for live data
 
-The deployed instance runs on live Sectors API data. Locally, you can develop without an API key using the optional demonstration dataset (see Setup).
+The deployed instance runs on live Sectors API data.
 
 ---
 
@@ -1448,12 +1444,6 @@ Synchronize live Sectors data:
 
 ```bash
 npm run db:sync
-```
-
-Optional — local exploration without an API key:
-
-```bash
-npm run db:seed
 ```
 
 Run the application:
@@ -1502,7 +1492,6 @@ An empty `DIRECT_URL` should not be left in the environment because it can overr
 | `npm run test` | Run unit tests (Jest, with coverage) |
 | `npm run test:e2e` | Run Playwright end-to-end tests |
 | `npm run db:push` | Apply database schema |
-| `npm run db:seed` | Load optional local demonstration dataset |
 | `npm run db:sync` | Synchronize market data |
 | `npm run db:sync -- --full` | Force fundamentals refresh |
 | `npm run db:sync -- --flow` | Pull foreign-flow data |

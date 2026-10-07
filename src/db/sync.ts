@@ -8,11 +8,11 @@
  *   npm run db:sync -- --index     force a full IHSG re-pull (~1 credit / 90 days)
  *
  * Idempotent and incremental:
- *   - First run replaces the seeded synthetic price series with real API data
- *     (trailing 90 days) and records state in `sync_state`.
+ *   - First run pulls the trailing 90 days of real API data for the watchlist
+ *     and records state in `sync_state`.
  *   - Later runs only pull trading days after the last sync and upsert.
  *   - Snapshots and market-intel scores are recomputed locally from stored
- *     prices (0 credits) with the same formulas as seed.ts.
+ *     prices (0 credits).
  *
  * Quota policy (lifetime budget, e.g. 1000 credits):
  *   - Only the watchlist (`src/db/watchlist.ts`, recomputed locally at 0
@@ -26,8 +26,8 @@
  *     `sync_state`, and a run is refused up-front when its estimate exceeds
  *     the lifetime budget remaining.
  *
- * Without SECTORS_API_KEY the script exits early with a clear message and the
- * app keeps serving the seeded demonstration dataset.
+ * Without SECTORS_API_KEY the script exits early with a clear message; the
+ * app keeps serving whatever data is already stored.
  */
 import "dotenv/config";
 import { db, pool } from "./index";
@@ -197,7 +197,7 @@ async function syncPrices(companies: CompanyRow[], emptyRuns: Map<number, number
   const incrementalStart = hasPriorSync ? addDays(lastTradingDate ?? addDays(today, -30), 1) : fullWindowStart;
 
   if (!hasPriorSync) {
-    console.log(`First sync — replacing seeded synthetic price series with real API data (${fullWindowStart} → ${today}) for the watchlist only.`);
+    console.log(`First sync — pulling real API data (${fullWindowStart} → ${today}) for the watchlist only.`);
     await db.delete(s.marketPrices).where(
       inArray(s.marketPrices.companyId, companies.map((c) => c.id)),
     );
@@ -881,7 +881,7 @@ async function main() {
       sectorsApiKey();
     } catch (err) {
       console.error(`✘ ${err instanceof Error ? err.message : err}`);
-      console.error("  App keeps serving the seeded demonstration dataset.");
+      console.error("  App keeps serving the data already stored.");
       process.exit(1);
     }
   }
