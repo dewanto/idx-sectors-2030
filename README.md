@@ -1319,6 +1319,10 @@ Help answer:
 
 # Judge Walkthrough
 
+**Judging video** — for the Sectors 2026 hackathon judges:
+
+[![IDX Sectors 2030 — judging video for Sectors 2026 hackathon judges](https://img.youtube.com/vi/p327pG4SQdQ/hqdefault.jpg)](https://www.youtube.com/watch?v=p327pG4SQdQ)
+
 The fastest way to understand the product is:
 
 ### 1. Open the Dashboard
