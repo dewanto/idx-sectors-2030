@@ -50,6 +50,8 @@ A 1-minute teaser of IDX Sectors 2030 — the 2030 execution intelligence platfo
 
 [![IDX Sectors 2030 — 1-minute product teaser](https://img.youtube.com/vi/8Yp1fmCoaPY/hqdefault.jpg)](https://www.youtube.com/watch?v=8Yp1fmCoaPY)
 
+**Product release (live app):** https://idx-sectors-2030.vercel.app/en
+
 ---
 
 # The 2030 Thesis

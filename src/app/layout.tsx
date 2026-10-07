@@ -20,7 +20,11 @@ const plexMono = IBM_Plex_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const t = dictFor(locale);
-  return { title: t.meta.title, description: t.meta.description };
+  return {
+    title: t.meta.title,
+    description: t.meta.description,
+    icons: { icon: "https://sdgactioncampaign.org/favicon.ico" },
+  };
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
