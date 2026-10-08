@@ -858,7 +858,7 @@ async function saveSyncState(result: PriceSyncResult, universeLabel: string) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main                                                               */
+/*  Runable sync entry point                                           */
 /* ------------------------------------------------------------------ */
 
 function printWatchlist(picks: { rank: number; ticker: string; potentialScore: number; breakdown: { marketIntel: number; signal: number; sdgEvidence: number; marketCondition: number; suspendedPenalty: number } }[]) {
@@ -874,17 +874,39 @@ function printWatchlist(picks: { rank: number; ticker: string; potentialScore: n
   console.log("");
 }
 
-async function main() {
-  console.log("=== Sectors API → Postgres sync ===");
-  if (!DRY_RUN) {
-    try {
-      sectorsApiKey();
-    } catch (err) {
-      console.error(`✘ ${err instanceof Error ? err.message : err}`);
-      console.error("  App keeps serving the data already stored.");
-      process.exit(1);
-    }
-  }
+/** Exit statuses mirroring the CLI for the cron job's HTTP status code. */
+export const SYNC_OK = 0;
+export const SYNC_API_KEY_MISSING = 1;
+export const SYNC_FAILED = 2;
+export const SYNC_ABORTED = 3;
+
+/** Sync budget options for the cron path. */
+export interface SyncOptions {
+  budget?: number;
+  dryRun?: boolean;
+  full?: boolean;
+  flowLimit?: number;
+}
+
+export interface SyncResult {
+  exitCode: number;
+  creditsUsed: number;
+  indexRows: number;
+  indexAborted: string | null;
+  pricesUpserted: number;
+  tickersSynced: number;
+  snapshots: number;
+  scores: number;
+  flowRows: number;
+  flowAborted: string | null;
+  skippedNonTrading: boolean;
+}
+
+export async function runSync(opts: SyncOptions = {}): Promise<SyncResult> {
+  const DRY_RUN = !!opts.dryRun;
+  const FULL = !!opts.full;
+  const FLOW = !!opts.flowLimit;
+  const FLOW_LIMIT = Math.max(1, opts.flowLimit ?? 10);
 
   const budget = Number(process.env.SECTORS_DAILY_CREDIT_BUDGET || 200);
   creditBudget.remaining = budget;
@@ -909,171 +931,185 @@ async function main() {
   );
 
   const companies = await loadUniverse();
-  const picks = await refreshWatchlist(WATCHLIST_LIMIT);
-  printWatchlist(picks);
-  const byId = new Map(companies.map((c) => [c.id, c]));
-  const watchCompanies = picks
-    .map((p) => byId.get(p.companyId))
-    .filter((c): c is CompanyRow => c !== undefined);
-  const emptyRuns = new Map(picks.map((p) => [p.companyId, p.emptyRuns]));
-
-  /* cost estimate — consumed by the lifetime guard and printed by --dry-run */
-  const today = iso(new Date());
-  const [indexPrior] = await db
-    .select()
-    .from(s.syncState)
-    .where(eq(s.syncState.source, "sectors.index"))
-    .limit(1);
-  const indexLast = indexPrior?.lastTradingDate ?? null;
-  const indexDaysBehind = indexLast ? (Date.parse(today) - Date.parse(indexLast)) / 86_400_000 : INDEX_HISTORY_DAYS;
-  const indexCredits = indexLast && indexLast >= today ? 0 : Math.max(1, Math.ceil(indexDaysBehind / 90));
-  const fundamentalsCount = (await fundamentalsTargets(watchCompanies)).length;
-  const flowCredits = FLOW ? Math.min(FLOW_LIMIT, watchCompanies.length) : 0;
-  const estimated = watchCompanies.length + indexCredits + fundamentalsCount * 3 + flowCredits;
-
-  console.log(
-    `Estimated cost: ${estimated} credits` +
-      ` (prices ${watchCompanies.length} + index ${indexCredits} + fundamentals ${fundamentalsCount * 3}${flowCredits ? ` + flow ${flowCredits}` : ""})`,
-  );
-
-  if (DRY_RUN) {
-    console.log(`Lifetime after this run would be: ${lifetimeUsed + estimated}/${LIFETIME_BUDGET}`);
-    console.log("Dry run complete — no API calls made. ✔");
-    await pool.end();
-    return;
-  }
-
-  if (estimated > lifetimeRemaining) {
-    console.error(
-      `✘ Estimated run cost (${estimated} credits) exceeds the remaining lifetime budget (${Math.max(0, lifetimeRemaining)}/${LIFETIME_BUDGET}).` +
-        ` Raise SECTORS_TOTAL_CREDIT_BUDGET, lower SECTORS_WATCHLIST_LIMIT, or wait for a quota reset.`,
-    );
-    await pool.end();
-    process.exit(1);
-  }
-  if (lifetimeRemaining - estimated < 14 * (WATCHLIST_LIMIT + 1)) {
-    console.warn(
-      `⚠ Lifetime budget running low: ${Math.max(0, lifetimeRemaining)} credits left (~2 weeks of daily runs).` +
-        ` Consider a smaller SECTORS_WATCHLIST_LIMIT or a less frequent schedule.`,
-    );
-  }
-
-  /* --- probe: index first, so a closed market costs 1 credit, not 21+ --- */
-  let indexAborted: string | null = null;
-  let skippedNonTrading = false;
-  try {
-    const indexResult = await syncIndex();
-    indexAborted = indexResult.aborted;
-    await upsertSyncState({
-      source: "sectors.index",
-      lastSyncAt: new Date(),
-      lastTradingDate: indexResult.lastDate,
-      universe: INDEX_CODE.toUpperCase(),
-      tickersSynced: 1,
-      rowsUpserted: indexResult.rows,
-      creditsUsed: stageCredits.index,
-      emptyStreak: indexResult.emptyStreak,
-      note: indexResult.aborted ? `Aborted: ${indexResult.aborted}` : null,
-    });
-
-    const probeSaysClosed = indexResult.rows === 0 && !indexResult.skippedCurrent && !!indexPrior && !FORCE_INDEX;
-    if (probeSaysClosed && indexResult.emptyStreak < MAX_PROBE_EMPTY_STREAK) {
-      skippedNonTrading = true;
-      console.log(
-        `Index probe found no new bars (streak ${indexResult.emptyStreak}/${MAX_PROBE_EMPTY_STREAK}) — ` +
-          `likely a non-trading day. Skipping the price/fundamental stages to save ~${watchCompanies.length} credits.`,
-      );
-    } else if (probeSaysClosed) {
-      console.warn(
-        `⚠ Index returned no bars for ${indexResult.emptyStreak} consecutive runs — syncing prices anyway ` +
-          `(index data may be lagging).`,
-      );
-    }
-  } catch (err) {
-    indexAborted = err instanceof Error ? err.message : String(err);
-    console.error("✘ Index sync failed:", indexAborted);
-  }
-
-  if (skippedNonTrading) {
+    const picks = await refreshWatchlist(WATCHLIST_LIMIT);
+    printWatchlist(picks);
+    const byId = new Map(companies.map((c) => [c.id, c]));
+    const watchCompanies = picks
+      .map((p) => byId.get(p.companyId))
+      .filter((c): c is CompanyRow => c !== undefined);
+    const emptyRuns = new Map(picks.map((p) => [p.companyId, p.emptyRuns]));
+  
+    /* cost estimate — consumed by the lifetime guard and printed by --dry-run */
+    const today = iso(new Date());
+    const [indexPrior] = await db
+      .select()
+      .from(s.syncState)
+      .where(eq(s.syncState.source, "sectors.index"))
+      .limit(1);
+    const indexLast = indexPrior?.lastTradingDate ?? null;
+    const indexDaysBehind = indexLast ? (Date.parse(today) - Date.parse(indexLast)) / 86_400_000 : INDEX_HISTORY_DAYS;
+    const indexCredits = indexLast && indexLast >= today ? 0 : Math.max(1, Math.ceil(indexDaysBehind / 90));
+    const fundamentalsCount = (await fundamentalsTargets(watchCompanies)).length;
+    const flowCredits = FLOW ? Math.min(FLOW_LIMIT, watchCompanies.length) : 0;
+    const estimated = watchCompanies.length + indexCredits + fundamentalsCount * 3 + flowCredits;
+  
     console.log(
-      `Credits used this run: ${creditsUsed} (index probe only) — lifetime ${lifetimeUsed + creditsUsed}/${LIFETIME_BUDGET}`,
+      `Estimated cost: ${estimated} credits` +
+        ` (prices ${watchCompanies.length} + index ${indexCredits} + fundamentals ${fundamentalsCount * 3}${flowCredits ? ` + flow ${flowCredits}` : ""})`,
     );
-    console.log("Sync complete (non-trading day) ✔");
-    await pool.end();
-    return;
-  }
-
-  const priceResult = await syncPrices(watchCompanies, emptyRuns);
-  if (priceResult.tickersSynced === 0) {
-    console.error("✘ No price data synced — leaving database and sync state untouched.");
-    await pool.end();
-    process.exit(1);
-  }
-
-  let derivedFailed = false;
-  try {
-    await syncFundamentals(watchCompanies);
-    await recomputeDerived(companies);
-  } catch (err) {
-    derivedFailed = true;
-    console.error("✘ Derived recompute failed:", err instanceof Error ? err.message : err);
-  }
-
-  /* Foreign flow costs ~1 credit/ticker, so it stays opt-in behind --flow=N
-     and only covers the top-N watchlist names. */
-  let flowAborted: string | null = null;
-  if (FLOW) {
-    try {
-      const flowResult = await syncForeignFlow(watchCompanies.slice(0, FLOW_LIMIT));
-      /* A completely empty flow pull is a failure, not a no-op — reporting
-         "Sync complete" after every ticker errored hid a real breakage. */
-      if (flowResult.rows === 0 && flowResult.tickers > 0) {
-        flowAborted = `no foreign-flow rows written for ${flowResult.tickers} tickers`;
-        console.error(`✘ Foreign flow produced no rows: ${flowAborted}`);
-      }
-      await upsertSyncState({
-        source: "sectors.foreign_flow",
-        lastSyncAt: new Date(),
-        /* Only advance the watermark when rows were ACTUALLY written. Writing
-           today's date after a 0-row run poisons the next incremental pull —
-           the same failure mode that cost credits in the price sync. */
-        lastTradingDate: flowResult.lastDate,
-        universe: UNIVERSE,
-        tickersSynced: flowResult.tickers,
-        rowsUpserted: flowResult.rows,
-        creditsUsed: stageCredits.flow,
-        emptyStreak: 0,
-        note: flowResult.failed
-          ? `${flowResult.failed}/${watchCompanies.slice(0, FLOW_LIMIT).length} tickers returned no rows — re-run to backfill`
-          : null,
-      });
-    } catch (err) {
-      flowAborted = err instanceof Error ? err.message : String(err);
-      console.error("✘ Foreign flow sync failed:", flowAborted);
+  
+    if (DRY_RUN) {
+      console.log(`Lifetime after this run would be: ${lifetimeUsed + estimated}/${LIFETIME_BUDGET}`);
+      console.log("Dry run complete — no API calls made. ✔");
+      return { exitCode: SYNC_OK, creditsUsed: 0, indexRows: 0, indexAborted: null, pricesUpserted: 0, tickersSynced: 0, snapshots: 0, scores: 0, flowRows: 0, flowAborted: null, skippedNonTrading: false };
     }
-  } else {
-    console.log("Foreign flow: skipped (pass --flow=N to enable, ~1 credit/ticker, top-N watchlist)");
+  
+    if (estimated > lifetimeRemaining) {
+      console.error(
+        `✘ Estimated run cost (${estimated} credits) exceeds the remaining lifetime budget (${Math.max(0, lifetimeRemaining)}/${LIFETIME_BUDGET}).` +
+          ` Raise SECTORS_TOTAL_CREDIT_BUDGET, lower SECTORS_WATCHLIST_LIMIT, or wait for a quota reset.`,
+      );
+      return { exitCode: SYNC_ABORTED, creditsUsed: 0, indexRows: 0, indexAborted: null, pricesUpserted: 0, tickersSynced: 0, snapshots: 0, scores: 0, flowRows: 0, flowAborted: null, skippedNonTrading: false };
+    }
+    if (lifetimeRemaining - estimated < 14 * (WATCHLIST_LIMIT + 1)) {
+      console.warn(
+        `⚠ Lifetime budget running low: ${Math.max(0, lifetimeRemaining)} credits left (~2 weeks of daily runs).` +
+          ` Consider a smaller SECTORS_WATCHLIST_LIMIT or a less frequent schedule.`,
+      );
+    }
+  
+    /* --- probe: index first, so a closed market costs 1 credit, not 21+ --- */
+    let indexAborted: string | null = null;
+    let skippedNonTrading = false;
+    let indexRows = 0;
+    try {
+      const indexResult = await syncIndex();
+      indexAborted = indexResult.aborted;
+      indexRows = indexResult.rows;
+      await upsertSyncState({
+        source: "sectors.index",
+        lastSyncAt: new Date(),
+        lastTradingDate: indexResult.lastDate,
+        universe: INDEX_CODE.toUpperCase(),
+        tickersSynced: 1,
+        rowsUpserted: indexResult.rows,
+        creditsUsed: stageCredits.index,
+        emptyStreak: indexResult.emptyStreak,
+        note: indexResult.aborted ? `Aborted: ${indexResult.aborted}` : null,
+      });
+  
+      const probeSaysClosed = indexResult.rows === 0 && !indexResult.skippedCurrent && !!indexPrior && !FORCE_INDEX;
+      if (probeSaysClosed && indexResult.emptyStreak < MAX_PROBE_EMPTY_STREAK) {
+        skippedNonTrading = true;
+        console.log(
+          `Index probe found no new bars (streak ${indexResult.emptyStreak}/${MAX_PROBE_EMPTY_STREAK}) — ` +
+            `likely a non-trading day. Skipping the price/fundamental stages to save ~${watchCompanies.length} credits.`,
+        );
+      } else if (probeSaysClosed) {
+        console.warn(
+          `⚠ Index returned no bars for ${indexResult.emptyStreak} consecutive runs — syncing prices anyway ` +
+            `(index data may be lagging).`,
+        );
+      }
+    } catch (err) {
+      indexAborted = err instanceof Error ? err.message : String(err);
+      console.error("✘ Index sync failed:", indexAborted);
+    }
+  
+    if (skippedNonTrading) {
+      console.log(
+        `Credits used this run: ${creditsUsed} (index probe only) — lifetime ${lifetimeUsed + creditsUsed}/${LIFETIME_BUDGET}`,
+      );
+      console.log("Sync complete (non-trading day) ✔");
+      return { exitCode: SYNC_OK, creditsUsed, indexRows, indexAborted, pricesUpserted: 0, tickersSynced: 0, snapshots: 0, scores: 0, flowRows: 0, flowAborted: null, skippedNonTrading: true };
+    }
+  
+    const priceResult = await syncPrices(watchCompanies, emptyRuns);
+    if (priceResult.tickersSynced === 0) {
+      console.error("✘ No price data synced — leaving database and sync state untouched.");
+      return { exitCode: SYNC_FAILED, creditsUsed, indexRows, indexAborted, pricesUpserted: 0, tickersSynced: 0, snapshots: 0, scores: 0, flowRows: 0, flowAborted: null, skippedNonTrading: false };
+    }
+  
+    let derivedFailed = false;
+    let snapshots = 0;
+    let scores = 0;
+    try {
+      await syncFundamentals(watchCompanies);
+      const derived = await recomputeDerived(companies);
+      snapshots = derived.snapshots;
+      scores = derived.scores;
+    } catch (err) {
+      derivedFailed = true;
+      console.error("✘ Derived recompute failed:", err instanceof Error ? err.message : err);
+    }
+  
+    /* Foreign flow costs ~1 credit/ticker, so it stays opt-in behind --flow=N
+       and only covers the top-N watchlist names. */
+    let flowAborted: string | null = null;
+    let flowRows = 0;
+    if (FLOW) {
+      try {
+        const flowResult = await syncForeignFlow(watchCompanies.slice(0, FLOW_LIMIT));
+        flowRows = flowResult.rows;
+        /* A completely empty flow pull is a failure, not a no-op — reporting
+           "Sync complete" after every ticker errored hid a real breakage. */
+        if (flowResult.rows === 0 && flowResult.tickers > 0) {
+          flowAborted = `no foreign-flow rows written for ${flowResult.tickers} tickers`;
+          console.error(`✘ Foreign flow produced no rows: ${flowAborted}`);
+        }
+        await upsertSyncState({
+          source: "sectors.foreign_flow",
+          lastSyncAt: new Date(),
+          /* Only advance the watermark when rows were ACTUALLY written. Writing
+             today's date after a 0-row run poisons the next incremental pull —
+             the same failure mode that cost credits in the price sync. */
+          lastTradingDate: flowResult.lastDate,
+          universe: UNIVERSE,
+          tickersSynced: flowResult.tickers,
+          rowsUpserted: flowResult.rows,
+          creditsUsed: stageCredits.flow,
+          emptyStreak: 0,
+          note: flowResult.failed
+            ? `${flowResult.failed}/${watchCompanies.slice(0, FLOW_LIMIT).length} tickers returned no rows — re-run to backfill`
+            : null,
+        });
+      } catch (err) {
+        flowAborted = err instanceof Error ? err.message : String(err);
+        console.error("✘ Foreign flow sync failed:", flowAborted);
+      }
+    } else {
+      console.log("Foreign flow: skipped (pass --flow=N to enable, ~1 credit/ticker, top-N watchlist)");
+    }
+  
+    /* Persist state even on partial failure so the next run continues
+       incrementally instead of re-burning credits on the full window. */
+    await saveSyncState(priceResult, UNIVERSE);
+  
+    console.log(
+      `Credits used this run: ${creditsUsed} (prices ${stageCredits.prices}, fundamentals ${stageCredits.fundamentals},` +
+        ` index ${stageCredits.index}, flow ${stageCredits.flow}) — lifetime ${lifetimeUsed + creditsUsed}/${LIFETIME_BUDGET}`,
+    );
+    if (derivedFailed || priceResult.aborted || indexAborted || flowAborted) {
+      console.log("Sync finished with warnings — re-run `npm run db:sync` to retry the missing tickers.");
+      return { exitCode: SYNC_FAILED, creditsUsed, indexRows, indexAborted, pricesUpserted: priceResult.rowsUpserted, tickersSynced: priceResult.tickersSynced, snapshots, scores, flowRows, flowAborted, skippedNonTrading: false };
+    }
+    console.log("Sync complete ✔");
+    return { exitCode: SYNC_OK, creditsUsed, indexRows, indexAborted, pricesUpserted: priceResult.rowsUpserted, tickersSynced: priceResult.tickersSynced, snapshots, scores, flowRows, flowAborted: null, skippedNonTrading: false };
   }
-
-  /* Persist state even on partial failure so the next run continues
-     incrementally instead of re-burning credits on the full window. */
-  await saveSyncState(priceResult, UNIVERSE);
-
-  console.log(
-    `Credits used this run: ${creditsUsed} (prices ${stageCredits.prices}, fundamentals ${stageCredits.fundamentals},` +
-      ` index ${stageCredits.index}, flow ${stageCredits.flow}) — lifetime ${lifetimeUsed + creditsUsed}/${LIFETIME_BUDGET}`,
-  );
-  if (derivedFailed || priceResult.aborted || indexAborted || flowAborted) {
-    console.log("Sync finished with warnings — re-run `npm run db:sync` to retry the missing tickers.");
+  
+  /* Keep the CLI entry point working when run directly via tsx */
+  async function main() {
+    const result = await runSync({
+      dryRun: DRY_RUN,
+      full: FULL,
+      flowLimit: FLOW ? FLOW_LIMIT : undefined,
+    });
     await pool.end();
-    process.exit(2);
+    process.exit(result.exitCode);
   }
-  console.log("Sync complete ✔");
-  await pool.end();
-}
-
-main().catch(async (err) => {
-  console.error("Sync failed:", err instanceof Error ? err.message : err);
-  await pool.end().catch(() => {});
-  process.exit(1);
-});
+  
+  main().catch(async (err) => {
+    console.error("Sync failed:", err instanceof Error ? err.message : err);
+    await pool.end().catch(() => {});
+    process.exit(1);
+  });
