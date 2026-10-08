@@ -2,7 +2,7 @@
 
 # IDX Sectors 2030
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue)](https://github.com/dewanto/idx-sectors-2030/releases)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue)](https://github.com/dewanto/idx-sectors-2030/releases)
 ![Tests](https://img.shields.io/badge/tests-passing-green)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
