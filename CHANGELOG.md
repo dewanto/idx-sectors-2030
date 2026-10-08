@@ -5,6 +5,26 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-08
+
+### Added
+
+- Daily automated data sync via Vercel Cron Jobs — `vercel.json` triggers
+  `GET /api/sync` at 01:00 UTC every day (after IDX market close and settlement
+  of the daily bars), so the watchlist, index history, fundamentals and derived
+  scores refresh without a manual `npm run db:sync`
+- `GET` + `POST /api/sync` route handler running the full sync pipeline —
+  protected by bearer-token auth against the `CRON_SECRET` environment
+  variable (Vercel Cron sends `Authorization: Bearer ${CRON_SECRET}`
+  automatically); `maxDuration` raised to 60s to cover a full fundamentals
+  refresh
+- `runSync()` exported entry point in `src/db/sync.ts` with a structured
+  `SyncResult` and machine-readable exit codes (`SYNC_OK`, `SYNC_FAILED`,
+  `SYNC_ABORTED`) so the pipeline runs identically as the CLI
+  (`npm run db:sync`) and from the cron HTTP endpoint — the CLI bootstrap
+  moved to `src/db/sync-cli.ts` (same command, same exit codes; importing
+  `src/db/sync` no longer starts a sync)
+
 ## [1.2.0] - 2026-10-07
 
 ### Added
@@ -64,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PostgreSQL sync architecture (Sync→Store→Derive→Query)
 - Server-side API key management (zero client exposure)
 
+[1.3.0]: https://github.com/dewanto/idx-sectors-2030/releases/tag/v1.3.0
 [1.2.0]: https://github.com/dewanto/idx-sectors-2030/releases/tag/v1.2.0
 [1.1.0]: https://github.com/dewanto/idx-sectors-2030/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dewanto/idx-sectors-2030/releases/tag/v1.0.0

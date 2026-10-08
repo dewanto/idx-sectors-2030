@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
-    "db:sync": "tsx src/db/sync.ts",
+    "db:sync": "tsx src/db/sync-cli.ts",
     "db:migrate:supabase": "tsx src/db/migrate-to-supabase.ts",
     "db:smoke": "tsx src/db/smoke-sectors.ts",
     "db:smoke:gann": "tsx src/db/smoke-gann.ts",

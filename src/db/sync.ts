@@ -1094,22 +1094,5 @@ export async function runSync(opts: SyncOptions = {}): Promise<SyncResult> {
       return { exitCode: SYNC_FAILED, creditsUsed, indexRows, indexAborted, pricesUpserted: priceResult.rowsUpserted, tickersSynced: priceResult.tickersSynced, snapshots, scores, flowRows, flowAborted, skippedNonTrading: false };
     }
     console.log("Sync complete ✔");
-    return { exitCode: SYNC_OK, creditsUsed, indexRows, indexAborted, pricesUpserted: priceResult.rowsUpserted, tickersSynced: priceResult.tickersSynced, snapshots, scores, flowRows, flowAborted: null, skippedNonTrading: false };
-  }
-  
-  /* Keep the CLI entry point working when run directly via tsx */
-  async function main() {
-    const result = await runSync({
-      dryRun: DRY_RUN,
-      full: FULL,
-      flowLimit: FLOW ? FLOW_LIMIT : undefined,
-    });
-    await pool.end();
-    process.exit(result.exitCode);
-  }
-  
-  main().catch(async (err) => {
-    console.error("Sync failed:", err instanceof Error ? err.message : err);
-    await pool.end().catch(() => {});
-    process.exit(1);
-  });
+        return { exitCode: SYNC_OK, creditsUsed, indexRows, indexAborted, pricesUpserted: priceResult.rowsUpserted, tickersSynced: priceResult.tickersSynced, snapshots, scores, flowRows, flowAborted: null, skippedNonTrading: false };
+      }

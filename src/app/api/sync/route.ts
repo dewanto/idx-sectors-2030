@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
-import { runSync, SYNC_OK, SYNC_FAILED, SYNC_ABORTED } from "@/db/sync";
+import { runSync, SYNC_OK, SYNC_ABORTED } from "@/db/sync";
 
-export async function POST(req: Request) {
-  const auth = req.headers.get("authorization") ?? "";
-  const secret = process.env.SYNC_CRON_SECRET ?? "";
+/* Vercel cron invocations can outlive the default function timeout on a full
+   fundamentals refresh — request the maximum allowed on the current plan. */
+export const maxDuration = 60;
 
-  if (!secret || auth !== `Bearer ${secret}`) {
+/** Vercel Cron sends `Authorization: Bearer ${CRON_SECRET}` automatically. */
+function authorized(req: Request): boolean {
+  const secret = process.env.CRON_SECRET ?? process.env.SYNC_CRON_SECRET ?? "";
+  if (!secret) return false;
+  return (req.headers.get("authorization") ?? "") === `Bearer ${secret}`;
+}
+
+async function handle(req: Request) {
+  if (!authorized(req)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -20,4 +28,13 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+}
+
+/* Vercel Cron Jobs trigger the path with GET; POST stays for manual triggers. */
+export async function GET(req: Request) {
+  return handle(req);
+}
+
+export async function POST(req: Request) {
+  return handle(req);
 }
